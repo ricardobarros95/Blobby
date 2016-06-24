@@ -1,4 +1,0 @@
-sceneSetups:
-- path: Assets/LeanTouch/Examples/Simple Tap.unity
-  isLoaded: 1
-  isActive: 1
