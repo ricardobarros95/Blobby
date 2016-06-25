@@ -28,3 +28,12 @@ sysinfo.txt
 # Builds
 *.apk
 *.unitypackage
+/blobby/Library
+/blobby/Temp
+/blobby/Assembly-CSharp.csproj
+/blobby/Assembly-CSharp-Editor.csproj
+/blobby/Blobby.sln/blobby/Assembly-CSharp-Editor.csproj
+/blobby/Blobby.sln
+/blobby/Assembly-CSharp.csproj
+/blobby/Library
+Library
