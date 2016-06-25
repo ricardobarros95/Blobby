@@ -32,14 +32,25 @@ public class Drag : MonoBehaviour
         // Unhook the OnFingerUp event
         Lean.LeanTouch.OnFingerUp -= OnFingerUp;
     }
-
-    protected virtual void LateUpdate()
+    public float DragSpd = 4.0f;
+    protected virtual void Update()
     {
         // If there is an active finger, move this GameObject based on it
-        if (draggingFinger != null)
+        if (draggingFinger != null && holdingObject != null  )
         {
-            holdingObject.GetComponent<Steering>().enabled = false;
-            Lean.LeanTouch.MoveObject(holdingObject.transform, draggingFinger.DeltaScreenPosition);
+            //holdingObject.GetComponent<Steering>().enabled = false;
+          //  Lean.LeanTouch.MoveObject(holdingObject.transform, draggingFinger.DeltaScreenPosition);
+            var ray = draggingFinger.GetRay();
+            var hit = default(RaycastHit);
+            if (Physics.Raycast(ray, out hit, float.PositiveInfinity, -1 )) {
+                var str = holdingObject.GetComponentInChildren<BlobSim>().HigherBlob.GetComponent<Steering>();
+                str.Vel = Vector2.Lerp(str.Vel, (Vector2)hit.point - ((Vector2)str.transform.position + str.Vel*0.5f), DragSpd *Time.deltaTime) *3.0f;
+            }
+           
+        } else {
+            draggingFinger = null;
+            holdingObject = null;
+
         }
     }
     public LayerMask BlobMask;
@@ -52,8 +63,9 @@ public class Drag : MonoBehaviour
         // Was this finger pressed down on a collider?
         if (Physics.Raycast(ray, out hit, float.PositiveInfinity, BlobMask ))
         {
-            Debug.Log("click");
-            holdingObject = hit.collider.gameObject;
+            
+            holdingObject = hit.collider.transform.parent.gameObject;
+            Debug.Log("click  "+holdingObject.name);
             // Was that collider this one?
            // if (hit.collider.gameObject == gameObject)
            // {
@@ -62,15 +74,24 @@ public class Drag : MonoBehaviour
            // }
         }
     }
-
+    public float SwipeMd = 4;
     public void OnFingerUp(Lean.LeanFinger finger)
     {
         // Was the current finger lifted from the screen?
         if (finger == draggingFinger)
         {
+
+            if(holdingObject != null) {
+
+                var str = holdingObject.GetComponentInChildren<BlobSim>().HigherBlob.GetComponent<Steering>();
+                str.Vel += draggingFinger.SwipeDelta * SwipeMd;
+                holdingObject =null;
+            }
+
             // Unset the current finger
             draggingFinger = null;
-            holdingObject.GetComponent<Steering>().enabled = true;
+
+           // holdingObject.GetComponent<Steering>().enabled = true;
   
 
             //// Was this finger pressed down on a collider?

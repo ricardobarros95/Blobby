@@ -200,7 +200,7 @@ public class Steering : MonoBehaviour {
                 col = Color.yellow;
                 break;
         }
-        GetComponent<MeshRenderer>().material.color = col;
+        GetComponentInChildren<MeshRenderer>().material.color = col;
         BS.MC.GetComponent<MeshRenderer>().material.color = col;
     }
 
