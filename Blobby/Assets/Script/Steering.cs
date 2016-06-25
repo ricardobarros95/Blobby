@@ -201,6 +201,7 @@ public class Steering : MonoBehaviour {
                 break;
         }
         GetComponent<MeshRenderer>().material.color = col;
+        BS.MC.GetComponent<MeshRenderer>().material.color = col;
     }
 
     void MergeBlob( Steering other, Colors newColor)
