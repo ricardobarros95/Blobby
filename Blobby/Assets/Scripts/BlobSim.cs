@@ -6,16 +6,22 @@ public class BlobSim : MonoBehaviour {
 
     public List<BlobNode> Nodes = new List<BlobNode>();
 
-
+    bool fix = false;
     void Start() {
+        if(!fix) {
 
-        foreach(var n in FindObjectsOfType<BlobNode>())
+           // UnityEngine.Profiler.maxNumberOfSamplesPerFrame *= 3;
+            fix = true;
+        }
+        Nodes.Clear();
+        foreach(var n in GetComponentsInChildren<BlobNode>())
             Nodes.Add(n);
     }
     public Vector2 Mid;
     Vector2 TL, BR;
 
-    float[] Arr;
+    public float Rad = 2;
+
     void FixedUpdate() {
 
         Vector2 mid = Vector2.zero;
@@ -38,7 +44,8 @@ public class BlobSim : MonoBehaviour {
                     }
     
                     vec /= m;
-                    m -= 2;
+                    m /= Rad/4;
+                    m -= 1;
                     if(m > 0) {
                         m*= 0.5f;
                         m = m *m;
@@ -61,42 +68,8 @@ public class BlobSim : MonoBehaviour {
 
     }
 
-    public int Dim = 30;
-    void aUpdate() {
-
-        Arr = new float[Dim*Dim];
 
 
-        for(int ni = Nodes.Count; ni-- >0; ) {
-            var n1 = Nodes[ni];
-            Vector2 p1 = n1.transform.position;
-            var lp = p1 - Mid;
-
-            int d = Dim/2;
-            for(int i = -d; i< d; i++)
-                for(int j = -d; j< d; j++) {
-                    var ap =  new Vector2(i, j);
-                    var ds = (ap-lp).magnitude;
-                   // if(ds < 10)
-                        Arr[d+i + (d+j) *Dim] += 0.25f/ds;
-                }
-        }
-    }
-
-
-    void OnDrawGizmos() {
-
-        if(Arr == null) return;
-        int d = Dim/2;
-        for(int i = -d; i< d; i++)
-            for(int j = -d; j< d; j++) {
-
-                Gizmos.color = Color.Lerp(Color.red, Color.green, Arr[d+i + (d+j) *Dim]);
-                Gizmos.DrawWireSphere(Mid + new Vector2(i, j), 0.5f );
-
-
-            }
-    }
-
+   
 
 }

@@ -43,9 +43,9 @@ public class MarchingCubes: MonoBehaviour {
 	/*Amount of cubes in X/Y/Z directions, Dimension will always be from -.5f to .5f in XYZ
 	  remember to call Regen() if changing!
     */
-	int _dimX=50;
-	int _dimY=50;
-	int _dimZ=5;
+	public int _dimX=50;
+    public int _dimY=50;
+    public int _dimZ=5;
  
 	public int dimX {
 		get {return _dimX; }
@@ -61,7 +61,7 @@ public class MarchingCubes: MonoBehaviour {
 	}
 	/*Blobs are a staggered array of floats, where first index is blob, and second is 0=x, 1=y 2=z 3=power
 	  Multidim might be slightly faster, but staggered made the code a little cleaner IMO*/
-	public float[][] blobs;
+	//public float[][] blobs;
  
 	/*Cutoff intensity, where the surface of mesh will be created*/
     public float isoLevel=.5f, isoScl = 0.02f;	
@@ -148,22 +148,20 @@ public class MarchingCubes: MonoBehaviour {
  
 	/*Point (in lattice) class*/
 	public class mcPoint {
+
+
+        public int px, py, pz;
+        public int cntr;
  
- 
- 
-		/*Calculated Intensity or Power of point*/
+        private MarchingCubes mcblob;
+		/*Calculated Intensity or Power of point* /
 		public float _i;
  
-		public int px,py,pz;
- 
-		private MarchingCubes mcblob;
- 
-		public int cntr;
- 
+		
 		/*Object Space position of point*/
 	    public float[] index;
- 
- 
+        
+        float zMod;
 		public mcPoint(float x,float y,float z,int px,int py,int pz,MarchingCubes thismcblob)
 		{
 			this.index=new float[3];
@@ -174,9 +172,11 @@ public class MarchingCubes: MonoBehaviour {
 			this.pz=pz;
 			this.cntr=0;
 			this.mcblob=thismcblob;
+
+            zMod = 1.0f - Mathf.Pow(Mathf.Abs(z*1.1f -0.05f), 1.5f);
 		}
  
-		/*Axis letter accessors*/
+		/*Axis letter accessors* 
 		public float x{
 			get{ return index[0]; }
 			set{ index[0]=value; }
@@ -194,7 +194,7 @@ public class MarchingCubes: MonoBehaviour {
 		/*Calculate the power of a point only if it hasn't been calculated already for this frame*/
 		public float i()
 		{
-			float pwr;
+			/*float pwr;
 			if(cntr<mcblob.pctr) {
 				cntr=mcblob.pctr;
 				pwr=0f;
@@ -210,15 +210,23 @@ public class MarchingCubes: MonoBehaviour {
                     p.y /= mcblob.dimY;
                     pwr = Mathf.Min(pwr+ (1.0f/Mathf.Sqrt(((p.x-this.x)*(p.x-this.x))+((p.y-this.y)*(p.y-this.y))))*mcblob.isoScl * (1), 1);
                   //  pwr *= 1.0f - 4.0f* z *z;
-				}*/
+				}* /
                 pwr = mcblob.Arr[px, py];
                 pwr *= 1.0f - Mathf.Pow( Mathf.Abs(z*1.1f -0.05f),1.5f);
               //  pwr /= 1 + Mathf.Abs(z);
 				this._i=pwr;
-			}
-			return this._i;
+			} */
+            return mcblob.Arr[px, py] * zMod;
 		}
- 
+
+        bool flag;
+        public bool b() {
+            if(cntr<mcblob.pctr) {
+                cntr=mcblob.pctr;
+                flag = i() > mcblob.isoLevel;
+            }
+            return flag;
+        }
 		public float this[int idx]
 		{
 			get{
@@ -227,10 +235,7 @@ public class MarchingCubes: MonoBehaviour {
 			set{
 				index[idx]=value;
 			}
-		}
- 
- 
- 
+		} 
 	}
 
 	/* Normals are calculated by 'averaging' all the derivatives of the Blob power functions*/ 
@@ -256,23 +261,24 @@ public class MarchingCubes: MonoBehaviour {
 			float mag=current.magnitude;
 			float pwr=.5f*(1f/(mag*mag*mag))*0.13f;			
 			result=result+(current*pwr);		
-	
-
 		}
 		return result.normalized;
 	}
  
-	/*Given xyz indices into lattice, return referring cube */	
-	private mcCube getCube(int x,int y,int z)
-	{
-		if(x<0 || y<0 || z < 0 || x>=dimX || y>=dimY || z>=dimZ) {return null;}
-		return _cubes[z+(y*(dimZ))+(x*(dimZ)*(dimY))];
-	}
+	/*Given xyz indices into lattice, return referring cube */
+    private mcCube getCube( int x, int y, int z ) {
+        if(x<0 || y<0 || z < 0 || x>=dimX || y>=dimY || z>=dimZ) {return null;}
+        return _cubes[z+(y*(dimZ))+(x*(dimZ)*(dimY))];
+    }
+    private mcCube qGetCube( int x, int y, int z ) {
+        //if(x<0 || y<0 || z < 0 || x>=dimX || y>=dimY || z>=dimZ) {return null;}
+        return _cubes[z+(y*(dimZ))+(x*(dimZ)*(dimY))];
+    }
  
 	/*Given xyz indices into lattice, return referring vertex */
 	private mcPoint getPoint(int x,int y,int z)
 	{
-		if(x<0 || y<0 || z < 0 || x>dimX || y>dimY || z>dimZ) {return null;}
+		//if(x<0 || y<0 || z < 0 || x>dimX || y>dimY || z>dimZ) {return null;}
 		return _points[z+(y*(dimZ+1))+(x*(dimZ+1)*(dimY+1))];
 	}
  
@@ -295,14 +301,12 @@ public class MarchingCubes: MonoBehaviour {
 		Vector3 v;
 		mcEdge e=cube.edges[edgei];
 		if(e.cntr<pctr) {
- 
 			v=mPos(cube.points[p1i],cube.points[p2i],e.axisI);
 			e.v3=v;
 			e.vi=vertP;
 			newNormal[vertP]=calcNormal(v);
 			newVertex[vertP++]=v;		
 			e.cntr=pctr;		
- 
 		}  
  
 	}
@@ -321,14 +325,14 @@ public class MarchingCubes: MonoBehaviour {
  
 		int cubeIndex=0;
  
-		if(cube.points[0].i()>isoLevel) {cubeIndex|=1;}						
-		if(cube.points[1].i()>isoLevel) {cubeIndex|=2;}		
-		if(cube.points[2].i()>isoLevel) {cubeIndex|=4;}
-		if(cube.points[3].i()>isoLevel) {cubeIndex|=8;}
-		if(cube.points[4].i()>isoLevel) {cubeIndex|=16;}												
-		if(cube.points[5].i()>isoLevel) {cubeIndex|=32;}
-		if(cube.points[6].i()>isoLevel) {cubeIndex|=64;}
-		if(cube.points[7].i()>isoLevel) {cubeIndex|=128;}	
+		if(cube.points[0].b()) {cubeIndex|=1;}						
+		if(cube.points[1].b()) {cubeIndex|=2;}		
+		if(cube.points[2].b()) {cubeIndex|=4;}
+		if(cube.points[3].b()) {cubeIndex|=8;}
+		if(cube.points[4].b()) {cubeIndex|=16;}												
+		if(cube.points[5].b()) {cubeIndex|=32;}
+		if(cube.points[6].b()) {cubeIndex|=64;}
+		if(cube.points[7].b()) {cubeIndex|=128;}	
  
 		int edgeIndex=edgeTable[cubeIndex];
 		edgec+=edgeIndex;		
@@ -386,10 +390,7 @@ public class MarchingCubes: MonoBehaviour {
 		if(nCube!=null && nCube.cntr<pctr) {nCube.cntr=pctr; if(doCube(nCube)) { recurseCube(nCube); }}
 		nCube=getCube(jx,jy,jz-1);
 		if(nCube!=null && nCube.cntr<pctr) {nCube.cntr=pctr; if(doCube(nCube)) { recurseCube(nCube); }}
- 
- 
- 
- 
+
 	}
 
 
@@ -399,7 +400,7 @@ public class MarchingCubes: MonoBehaviour {
 
         pwr = Mathf.Min(pwr+ (1.0f/ds)*isoScl * (1), 1);
     }
-
+    public float DSRange = 10;
     void fillArr() {
 
        // Arr = new float[dimX*dimY];
@@ -411,17 +412,23 @@ public class MarchingCubes: MonoBehaviour {
         for(int ni = BS.Nodes.Count; ni-- >0; ) {
             var n1 = BS.Nodes[ni];
             Vector2 p1 = n1.transform.position;
+;
             var lp = p1 - BS.Mid;
             lp.x /= dimX;
             lp.y /= dimY;
+            lp += new Vector2( 0.5f, 0.5f);
             // int d = Dim/2;
-            for(int i = dimX+1; i-- > 0; )
-                for(int j = dimY+1; j-- > 0; ) {
-                    var ap =  new Vector2((float)i /(dimX+1) - 0.5f, (float)j /(dimY +1) - 0.5f);
+           // int mxX =  (int) ((lp.x +DSRange)*((float)dimX));
+            int mxX = Mathf.Min(dimX+1, (int)((lp.x +DSRange)*((float)dimX+1))), mnX = Mathf.Max(0, (int)((lp.x -DSRange)*((float)dimX+1)));
+            int mxY = Mathf.Min(dimY+1, (int)((lp.y +DSRange)*((float)dimY+1))), mnY = Mathf.Max(0, (int)((lp.y -DSRange)*((float)dimY+1)));
+            //.Log("mnX "+mnX +"   mxX "+mxX + "  mnY "+mnY +"   mxY "+mxY);
+            for(int i = mxX; i-- > mnX; )
+                for(int j = mxY; j-- > mnY; ) {
+                    var ap =  new Vector2((float)i /(dimX+1), (float)j /(dimY +1) );
                     var ds = (ap-lp).magnitude;
                     // if(ds < 10)
-
-                    pwrFunc(ref Arr[i, j], ds);
+                    if(ds < DSRange)
+                        pwrFunc(ref Arr[i, j], ds);
                 }
         }
     }
@@ -435,7 +442,8 @@ public class MarchingCubes: MonoBehaviour {
 	private void march()
 	{
         fillArr();
-		int i,jx,jy,jz;/*
+		//int i,jx,jy,jz; 
+        /*
 		for(i=0;i<BS.Nodes.Count;i++)
 		{
             var n =BS.Nodes[i];
@@ -463,7 +471,7 @@ public class MarchingCubes: MonoBehaviour {
 				}
 				jz-=1;						
 			}					 
-		} */
+		} * /
         for(jx = dimX; jx-- >0; )
         for(jy = dimY; jy-- >0; )
         for(jz = dimZ; jz-- >0; ) {
@@ -476,6 +484,34 @@ public class MarchingCubes: MonoBehaviour {
                 }
                 cube.cntr=pctr;
             }
+        } */
+
+
+        for(int ni = BS.Nodes.Count; ni-- >0; ) {
+            var n1 = BS.Nodes[ni];
+            Vector2 p1 = n1.transform.position;
+            ;
+            var lp = p1 - BS.Mid;
+            lp.x /= dimX;
+            lp.y /= dimY;
+            lp += new Vector2(0.5f, 0.5f);
+            // int d = Dim/2;
+            // int mxX =  (int) ((lp.x +DSRange)*((float)dimX));
+            int mxX = Mathf.Min(dimX, (int)((lp.x +DSRange)*((float)dimX))), mnX = Mathf.Max(0, (int)((lp.x -DSRange)*((float)dimX)));
+            int mxY = Mathf.Min(dimY, (int)((lp.y +DSRange)*((float)dimY))), mnY = Mathf.Max(0, (int)((lp.y -DSRange)*((float)dimY)));
+           // Debug.Log("mnX "+mnX +"   mxX "+mxX + "  mnY "+mnY +"   mxY "+mxY);
+            for(int i = mxX; i-- > mnX; )
+                for(int j = mxY; j-- > mnY; ) 
+                    for( int z = 0; z < dimZ; z++ ) {
+                        mcCube cube=qGetCube(i, j, z);
+                    if(cube!=null && cube.cntr<pctr) {
+                        if(doCube(cube)) {
+                            // recurseCube(cube);
+                            //  jz=-1;
+                        } else continue;
+                        cube.cntr=pctr;
+                    } else continue;
+                }
         }
         transform.position = BS.Mid;
 	}
@@ -556,15 +592,7 @@ public class MarchingCubes: MonoBehaviour {
 			//GUIText guit=(GUIText) GameObject.Find("guit").GetComponent<GUIText>();
 			//guit.text="T:"+triP+" V:"+vertP+" C:"+cubec+" FPS:"+(int)(1f/Time.deltaTime);
 		}
-		blobs[0][0]=.12f+.12f*(float)Mathf.Sin((float)Time.time*.50f);
-		blobs[0][2]=.06f+.23f*(float)Mathf.Cos((float)Time.time*.2f);
-		blobs[1][0]=.12f+.12f*(float)Mathf.Sin((float)Time.time*.2f);
-		blobs[1][2]=-.23f+.10f*(float)Mathf.Cos((float)Time.time*1f);
-		blobs[2][1]=-.03f+.24f*(float)Mathf.Sin((float)Time.time*.35f);
-		blobs[3][1]=.126f+.10f*(float)Mathf.Cos((float)Time.time*.1f);
-		blobs[4][0]=.206f+.1f*(float)Mathf.Cos((float)Time.time*.5f);
-		blobs[4][1]=.056f+.2f*(float)Mathf.Sin((float)Time.time*.3f);
-		blobs[4][2]=.25f+.08f*(float)Mathf.Cos((float)Time.time*.2f);
+
  
               //  transform.Rotate(Time.deltaTime*10f,0,Time.deltaTime*.6f);
  
@@ -576,14 +604,9 @@ public class MarchingCubes: MonoBehaviour {
 	//Unity and Sample Specific
 	void Start () {
 
-        BS= GetComponent<BlobSim>();
+        BS= transform.parent.GetComponentInChildren<BlobSim>();
 		lt=0f;
-		blobs=new float[5][];
-		blobs[0]=new float[]{.16f,.26f,.16f,.13f};
-		blobs[1]=new float[]{.13f,-.134f,.35f,.12f};
-		blobs[2]=new float[]{-.18f,.125f,-.25f,.16f};
-		blobs[3]=new float[]{-.13f,.23f,.255f,.13f};		
-		blobs[4]=new float[]{-.18f,.125f,.35f,.12f};
+		
  
 	   // isoLevel=1.95f;
  

@@ -37,3 +37,5 @@ sysinfo.txt
 /blobby/Assembly-CSharp.csproj
 /blobby/Library
 Library
+/blobby/obj
+/blobby/obj/Debug
