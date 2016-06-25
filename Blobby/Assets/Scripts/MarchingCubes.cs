@@ -302,9 +302,11 @@ public class MarchingCubes: MonoBehaviour {
 		mcEdge e=cube.edges[edgei];
 		if(e.cntr<pctr) {
 			v=mPos(cube.points[p1i],cube.points[p2i],e.axisI);
+            v.z = -v.z;
 			e.v3=v;
 			e.vi=vertP;
-			newNormal[vertP]=calcNormal(v);
+            var vn = calcNormal(v);// vn.z = -vn.z;
+            newNormal[vertP]= vn;
 			newVertex[vertP++]=v;		
 			e.cntr=pctr;		
 		}  
@@ -353,11 +355,11 @@ public class MarchingCubes: MonoBehaviour {
 			int tpi=0;
 			int tmp;				
 			while(triTable[cubeIndex,tpi]!=-1) {
-				tmp=cube.edges[triTable[cubeIndex,tpi+2]].vi;
+				tmp=cube.edges[triTable[cubeIndex,tpi]].vi;
    				newTri[triP++]=tmp;vertc+=tmp;	
    				tmp=cube.edges[triTable[cubeIndex,tpi+1]].vi;
    				newTri[triP++]=tmp;vertc+=tmp;
-   				tmp=cube.edges[triTable[cubeIndex,tpi]].vi;
+   				tmp=cube.edges[triTable[cubeIndex,tpi+2]].vi;
    				newTri[triP++]=tmp;vertc+=tmp;
    				tpi+=3;   							  
 			}
@@ -538,13 +540,14 @@ public class MarchingCubes: MonoBehaviour {
 		for(i=0;i<vertP;i++) {fv[i]=newVertex[i];
             fn[i]=newNormal[i];		                      
 							  fuv[i]=tada2[tadac2++];
-							  Vector3 fuvt=transform.TransformPoint(fn[i]).normalized;							  
-							  fuv[i].x=(fuvt.x+1f)*.5f;fuv[i].y=(fuvt.y+1f)*.5f;}							  
+							  //Vector3 fuvt=transform.TransformPoint(fn[i]).normalized;							  
+							 // fuv[i].x=(fuvt.x+1f)*.5f;fuv[i].y=(fuvt.y+1f)*.5f;
+        }							  
 //							  fuv[i].x=fn[i].x;fuv[i].y=fn[i].y;}
  
-		for(i=vertP;i<fv.Length;i++) {fv[i][0]=0;fn[i][0]=0;fuv[i][0]=0;
+		/*for(i=vertP;i<fv.Length;i++) {fv[i][0]=0;fn[i][0]=0;fuv[i][0]=0;
 							  fv[i][1]=0;fn[i][1]=0;fuv[i][1]=0;
-							  fv[i][2]=0;}
+							  fv[i][2]=0;} */
  
  
 		for(i=0;i<triP;i++) {ft[i]=newTri[i];}
@@ -554,7 +557,7 @@ public class MarchingCubes: MonoBehaviour {
  
  
 	    mesh.vertices = fv ;
-	    mesh.uv = fuv;
+	 //   mesh.uv = fuv;
 	    	    mesh.triangles = ft;	
 	    mesh.normals = fn;
  
@@ -621,7 +624,7 @@ public class MarchingCubes: MonoBehaviour {
 	/*Unity Specific starting of engine*/
 	void startEngine()
 	{
-		((MeshFilter) GetComponent("MeshFilter")).mesh=new Mesh();
+		 GetComponent<MeshCollider>().sharedMesh = ((MeshFilter) GetComponent("MeshFilter")).mesh=new Mesh();
 	}
  
  
