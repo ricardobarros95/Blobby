@@ -11,6 +11,8 @@ public class Drag : MonoBehaviour
 
     Score score;
 
+    GameObject holdingObject;
+
     protected virtual void OnEnable()
     {
         // Hook into the OnFingerDown event
@@ -36,11 +38,11 @@ public class Drag : MonoBehaviour
         // If there is an active finger, move this GameObject based on it
         if (draggingFinger != null)
         {
-            GetComponent<Steering>().enabled = false;
-            Lean.LeanTouch.MoveObject(transform, draggingFinger.DeltaScreenPosition);
+            holdingObject.GetComponent<Steering>().enabled = false;
+            Lean.LeanTouch.MoveObject(holdingObject.transform, draggingFinger.DeltaScreenPosition);
         }
     }
-
+    public LayerMask BlobMask;
     public void OnFingerDown(Lean.LeanFinger finger)
     {
         // Raycast information
@@ -48,15 +50,16 @@ public class Drag : MonoBehaviour
         var hit = default(RaycastHit);
 
         // Was this finger pressed down on a collider?
-        if (Physics.Raycast(ray, out hit, float.PositiveInfinity, LayerMask.GetMask("Blobs2")))
+        if (Physics.Raycast(ray, out hit, float.PositiveInfinity, BlobMask ))
         {
             Debug.Log("click");
+            holdingObject = hit.collider.gameObject;
             // Was that collider this one?
-            if (hit.collider.gameObject == gameObject)
-            {
+           // if (hit.collider.gameObject == gameObject)
+           // {
                 // Set the current finger to this one
                 draggingFinger = finger;
-            }
+           // }
         }
     }
 
@@ -67,7 +70,7 @@ public class Drag : MonoBehaviour
         {
             // Unset the current finger
             draggingFinger = null;
-            GetComponent<Steering>().enabled = true;
+            holdingObject.GetComponent<Steering>().enabled = true;
   
 
             //// Was this finger pressed down on a collider?
