@@ -5,7 +5,7 @@ using System.Collections.Generic;
 public class Spawn : MonoBehaviour {
 
     public GameObject spawnArea;
-    public GameObject prefab;
+    public GameObject prefab, prefab2;
     public List<Steering> spawnedObjects;
     public float avoidanceFactor = 1;
     public float avoidDistance = 3.25f;
@@ -33,6 +33,7 @@ public class Spawn : MonoBehaviour {
                 float magnitude = opositeDirection.sqrMagnitude;
                 if (magnitude < avoidDistance * avoidDistance)
                 {
+                    Debug.DrawLine(spawnedObjects[j].transform.position, spawnedObjects[i].transform.position, Color.white);
                     if(Mathf.Epsilon > magnitude)
                     {
                         continue;
@@ -60,6 +61,9 @@ public class Spawn : MonoBehaviour {
         float yPosition = Random.Range(-spawnArea.transform.lossyScale.y / 2 + 2, spawnArea.transform.lossyScale.y / 2 -2);
         spawnPosition = new Vector3(xPosition, yPosition, 0);
         GameObject gj = Instantiate(prefab, spawnPosition, Quaternion.identity) as GameObject;
+        var b2 = Instantiate(prefab2, spawnPosition, Quaternion.identity) as GameObject;
+        var bs = b2.GetComponentInChildren<BlobSim>();
+        bs.HigherBlob = gj.transform;
         gj.transform.SetParent(gameObject.transform);
         spawnedObjects.Add(gj.GetComponent<Steering>());
         int color = Random.Range(0, 6);
