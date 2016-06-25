@@ -60,6 +60,7 @@
      <Compile Include="Assets\LeanTouch\Scripts\LeanFinger.cs" />
      <Compile Include="Assets\LeanTouch\Scripts\LeanTouch.cs" />
      <Compile Include="Assets\Script\Score.cs" />
+     <Compile Include="Assets\Script\Spawn.cs" />
      <Compile Include="Assets\Script\Steering.cs" />
      <Compile Include="Assets\Script\Tap.cs" />
  <Reference Include="UnityEngine.UI">
