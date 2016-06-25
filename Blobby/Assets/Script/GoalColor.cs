@@ -13,14 +13,16 @@ public class GoalColor : MonoBehaviour {
 
     void OnTriggerEnter(Collider other)
     {
-        Debug.Log("triggered");
+       // Debug.Log("triggered");
         Debug.Log(other.gameObject.tag);
-        if (other.gameObject.tag == "Blob")
+        if (other.gameObject.tag == "Blob") //eww
         {
             Debug.Log(other.gameObject.GetComponent<Steering>().color.ToString());
             if (other.gameObject.GetComponent<Steering>().color == color)
             {
                 score.ChangeScore(10);
+                other.GetComponent<Steering>().die();
+               
             }
 
         }

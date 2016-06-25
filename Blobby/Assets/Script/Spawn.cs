@@ -43,9 +43,9 @@ public class Spawn : MonoBehaviour {
 
                     spawnedObjects[j].Vel -= (Vector2)opositeDirection * avoidanceFactor;
 
-                    if(magnitude < spawnedObjects[i].radius * spawnedObjects[i].radius)
+                    if(magnitude < Mathf.Pow(  spawnedObjects[i].radius + spawnedObjects[j].radius, 2 ) )
                     {
-                        spawnedObjects[i].ComboColors(spawnedObjects[j].color);
+                        spawnedObjects[i].ComboColors(spawnedObjects[j]);
                     }
                 }
 

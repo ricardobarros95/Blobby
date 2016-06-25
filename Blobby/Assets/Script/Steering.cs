@@ -74,106 +74,139 @@ public class Steering : MonoBehaviour {
     void Grow()
     {
         transform.localScale += Vector3.one * growFactor;
-        if(transform.localScale.magnitude >  1.05f * m)
+        if(transform.localScale.magnitude >  1.25f * m)
         {
             Split();
         }
     }
 
-    public void ComboColors(Colors colorHit)
+    public void ComboColors( Steering other )
     {
+        Colors colorHit = other.color;
         switch(color)
         {
             case Colors.GREEN:
                 if(colorHit == Colors.ORANGE)
                 {
-                    MergeBlob(Colors.YELLOW);
+                    MergeBlob( other, Colors.YELLOW);
                 }
                 else if(colorHit == Colors.PURPLE)
                 {
-                    MergeBlob(Colors.BLUE);
+                    MergeBlob( other, Colors.BLUE);
                 }
                 else
                 {
-                    Debug.Log("Wrong combo");
+                    //Debug.Log("Wrong combo");
                 }
                 break;
             case Colors.BLUE:
                 if (colorHit == Colors.RED)
                 {
-                    MergeBlob(Colors.PURPLE);
+                    MergeBlob( other, Colors.PURPLE);
                 }
                 else if (colorHit == Colors.YELLOW)
                 {
-                    MergeBlob(Colors.GREEN);
+                    MergeBlob( other, Colors.GREEN);
                 }
                 else
                 {
-                    Debug.Log("Wrong combo");
+                    //Debug.Log("Wrong combo");
                 }
                 break;
             case Colors.PURPLE:
                 if (colorHit == Colors.ORANGE)
                 {
-                    MergeBlob(Colors.RED);
+                    MergeBlob( other, Colors.RED);
                 }
                 else if (colorHit == Colors.GREEN)
                 {
-                    MergeBlob(Colors.BLUE);
+                    MergeBlob( other, Colors.BLUE);
                 }
                 else
                 {
-                    Debug.Log("Wrong combo");
+                    //Debug.Log("Wrong combo");
                 }
                 break;
             case Colors.RED:
                 if (colorHit == Colors.YELLOW)
                 {
-                    MergeBlob(Colors.ORANGE);
+                    MergeBlob( other, Colors.ORANGE);
                 }
                 else if (colorHit == Colors.BLUE)
                 {
-                    MergeBlob(Colors.PURPLE);
+                    MergeBlob( other, Colors.PURPLE);
                 }
                 else
                 {
-                    Debug.Log("Wrong combo");
+                    //Debug.Log("Wrong combo");
                 }
                 break;
             case Colors.ORANGE:
                 if (colorHit == Colors.GREEN)
                 {
-                    MergeBlob(Colors.YELLOW);
+                    MergeBlob( other, Colors.YELLOW);
                 }
                 else if (colorHit == Colors.PURPLE)
                 {
-                    MergeBlob(Colors.RED);
+                    MergeBlob( other, Colors.RED);
                 }
                 else
                 {
-                    Debug.Log("Wrong combo");
+                    //Debug.Log("Wrong combo");
                 }
                 break;
             case Colors.YELLOW:
                 if (colorHit == Colors.BLUE)
                 {
-                    MergeBlob(Colors.GREEN);
+                    MergeBlob( other, Colors.GREEN);
                 }
                 else if (colorHit == Colors.RED)
                 {
-                    MergeBlob(Colors.ORANGE);
+                    MergeBlob( other, Colors.ORANGE);
                 }
                 else
                 {
-                    Debug.Log("Wrong combo");
+                    //Debug.Log("Wrong combo");
                 }
                 break;
         }
     }
 
-    void MergeBlob(Colors newColor)
-    {
-        Debug.Log(newColor.ToString());
+    public void setColor( Colors c ) {
+
+        color = c;
+        Color col = Color.black;
+        switch(c) {
+            case Colors.GREEN:
+                col  = Color.green;
+                break;
+            case Colors.BLUE:
+                col  = Color.blue;
+                break;
+            case Colors.PURPLE:
+                col = GameManager.purple;
+                break;
+            case Colors.RED:
+                col  = Color.red;
+                break;
+            case Colors.ORANGE:
+                col  = GameManager.orange;
+                break;
+            case Colors.YELLOW:
+                col = Color.yellow;
+                break;
+        }
+        GetComponent<MeshRenderer>().material.color = col;
     }
 
+    void MergeBlob( Steering other, Colors newColor)
+    {
+        //Debug.Log(newColor.ToString());
+        setColor(newColor);
+        other.setColor(newColor);
+    }
+    public void die() {
+        Destroy(gameObject);
+        spawn.spawnedObjects.Remove(this);
+    }
 }
