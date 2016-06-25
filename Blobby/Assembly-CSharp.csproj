@@ -59,6 +59,9 @@
      <Compile Include="Assets\LeanTouch\Examples\SimpleZoom.cs" />
      <Compile Include="Assets\LeanTouch\Scripts\LeanFinger.cs" />
      <Compile Include="Assets\LeanTouch\Scripts\LeanTouch.cs" />
+     <Compile Include="Assets\Script\Drag.cs" />
+     <Compile Include="Assets\Script\GameManager.cs" />
+     <Compile Include="Assets\Script\GoalColor.cs" />
      <Compile Include="Assets\Script\Score.cs" />
      <Compile Include="Assets\Script\Spawn.cs" />
      <Compile Include="Assets\Script\Steering.cs" />

@@ -22,9 +22,11 @@ public class Steering : MonoBehaviour {
     public GameObject prefab;
     Vector3 originalScale;
     Spawn spawn;
+    public Colors color;
+    public float radius;
     // Use this for initialization
     void Start () {
-
+        radius = GetComponent<SphereCollider>().radius;
         m = transform.localScale.magnitude;
         originalScale = transform.localScale;
         area = transform.parent.gameObject;
@@ -36,7 +38,7 @@ public class Steering : MonoBehaviour {
 	void FixedUpdate () {
 
         if(isWandering) Wander();
-        Grow();
+       // Grow();
     }
     public Vector2 Vel;
     void Wander()
@@ -76,6 +78,102 @@ public class Steering : MonoBehaviour {
         {
             Split();
         }
+    }
+
+    public void ComboColors(Colors colorHit)
+    {
+        switch(color)
+        {
+            case Colors.GREEN:
+                if(colorHit == Colors.ORANGE)
+                {
+                    MergeBlob(Colors.YELLOW);
+                }
+                else if(colorHit == Colors.PURPLE)
+                {
+                    MergeBlob(Colors.BLUE);
+                }
+                else
+                {
+                    Debug.Log("Wrong combo");
+                }
+                break;
+            case Colors.BLUE:
+                if (colorHit == Colors.RED)
+                {
+                    MergeBlob(Colors.PURPLE);
+                }
+                else if (colorHit == Colors.YELLOW)
+                {
+                    MergeBlob(Colors.GREEN);
+                }
+                else
+                {
+                    Debug.Log("Wrong combo");
+                }
+                break;
+            case Colors.PURPLE:
+                if (colorHit == Colors.ORANGE)
+                {
+                    MergeBlob(Colors.RED);
+                }
+                else if (colorHit == Colors.GREEN)
+                {
+                    MergeBlob(Colors.BLUE);
+                }
+                else
+                {
+                    Debug.Log("Wrong combo");
+                }
+                break;
+            case Colors.RED:
+                if (colorHit == Colors.YELLOW)
+                {
+                    MergeBlob(Colors.ORANGE);
+                }
+                else if (colorHit == Colors.BLUE)
+                {
+                    MergeBlob(Colors.PURPLE);
+                }
+                else
+                {
+                    Debug.Log("Wrong combo");
+                }
+                break;
+            case Colors.ORANGE:
+                if (colorHit == Colors.GREEN)
+                {
+                    MergeBlob(Colors.YELLOW);
+                }
+                else if (colorHit == Colors.PURPLE)
+                {
+                    MergeBlob(Colors.RED);
+                }
+                else
+                {
+                    Debug.Log("Wrong combo");
+                }
+                break;
+            case Colors.YELLOW:
+                if (colorHit == Colors.BLUE)
+                {
+                    MergeBlob(Colors.GREEN);
+                }
+                else if (colorHit == Colors.RED)
+                {
+                    MergeBlob(Colors.ORANGE);
+                }
+                else
+                {
+                    Debug.Log("Wrong combo");
+                }
+                break;
+        }
+    }
+
+    void MergeBlob(Colors newColor)
+    {
+        Debug.Log(newColor.ToString());
     }
 
 }
