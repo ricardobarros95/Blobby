@@ -62,7 +62,7 @@ public class BlobSim : MonoBehaviour {
     }
 
     public int Dim = 30;
-    void Update() {
+    void aUpdate() {
 
         Arr = new float[Dim*Dim];
 
