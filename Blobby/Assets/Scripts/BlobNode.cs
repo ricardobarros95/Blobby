@@ -3,7 +3,7 @@ using System.Collections;
 
 public class BlobNode : MonoBehaviour {
 
-    public Vector2 InterBlob;
+    public Vector2 InterBlob, OInterBlob ;
 
     public Vector2 Wander;
     public float Speed = 5, Acc = 0.01f, Drag = 0.95f, InterMod = 1;
@@ -15,8 +15,8 @@ public class BlobNode : MonoBehaviour {
     }
 
     void FixedUpdate() {
-
-        Wander += InterBlob * InterMod;
+        OInterBlob = Vector2.Lerp(InterBlob, OInterBlob, 0.2f);
+        Wander += OInterBlob* InterMod;
         InterBlob = Vector2.zero;
         Wander *= Drag;
 
