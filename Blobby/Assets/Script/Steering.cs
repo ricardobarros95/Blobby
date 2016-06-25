@@ -24,18 +24,22 @@ public class Steering : MonoBehaviour {
     Spawn spawn;
     public Colors color;
     public float radius;
+
+    public BlobSim BS;
+
+
     // Use this for initialization
     void Start () {
-        radius = GetComponent<SphereCollider>().radius;
-        m = transform.localScale.magnitude;
-        originalScale = transform.localScale;
+       // radius = GetComponent<SphereCollider>().radius;
+       // m = transform.localScale.magnitude;
+        //originalScale = transform.localScale;
+        InvokeRepeating("CreateDestination", 0, 2);
         area = transform.parent.gameObject;
         spawn = area.GetComponent<Spawn>();
-        InvokeRepeating("CreateDestination", 0, 2);
-	}
-	
-	// Update is called once per frame
-	void FixedUpdate () {
+    }
+
+    // Update is called once per frame
+    void FixedUpdate () {
 
         if(isWandering) Wander();
        // Grow();
@@ -60,7 +64,7 @@ public class Steering : MonoBehaviour {
         distance = Vector3.Distance(transform.position, destination);
         isWandering = true;
     }
-
+    /*
     void Split()
     {
         transform.localScale = originalScale;
@@ -78,7 +82,7 @@ public class Steering : MonoBehaviour {
         {
             Split();
         }
-    }
+    } */
 
     public void ComboColors( Steering other )
     {

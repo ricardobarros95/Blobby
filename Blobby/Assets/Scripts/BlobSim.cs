@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 public class BlobSim : MonoBehaviour {
 
-
+    public MarchingCubes MC;
     public List<BlobNode> Nodes = new List<BlobNode>();
 
     bool fix = false;
@@ -16,12 +16,15 @@ public class BlobSim : MonoBehaviour {
         Nodes.Clear();
         foreach(var n in GetComponentsInChildren<BlobNode>())
             Nodes.Add(n);
+
+        MC = transform.parent.GetComponentInChildren<MarchingCubes>();
     }
     public Vector2 Mid;
     Vector2 TL, BR;
 
     public float Rad = 2;
-
+    public float Centreing = 0.5f;
+    public Transform HigherBlob;
     void FixedUpdate() {
 
         Vector2 mid = Vector2.zero;
@@ -30,10 +33,11 @@ public class BlobSim : MonoBehaviour {
             var n1 = Nodes[i];
             Vector2 p1 = n1.transform.position;
             mid += p1;
-
+            n1.Follow = Vector2.Lerp( n1.Follow, ((Vector2)HigherBlob.position - (Vector2)MC.transform.position ), Centreing * Time.deltaTime );
             for(int j = i; j-- > 0; ) {
                 var n2 = Nodes[j];
                 Vector2 p2 = n2.transform.position;
+                
 
                 var vec = p2 - p1;
                 var m = vec.magnitude;
