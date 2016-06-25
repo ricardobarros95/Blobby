@@ -4,7 +4,7 @@ using System.Collections.Generic;
 public class BlobSim : MonoBehaviour {
 
 
-    List<BlobNode> Nodes = new List<BlobNode>();
+    public List<BlobNode> Nodes = new List<BlobNode>();
 
 
     void Start() {
@@ -12,7 +12,10 @@ public class BlobSim : MonoBehaviour {
         foreach(var n in FindObjectsOfType<BlobNode>())
             Nodes.Add(n);
     }
+    public Vector2 Mid;
+    Vector2 TL, BR;
 
+    float[] Arr;
     void FixedUpdate() {
 
         Vector2 mid = Vector2.zero;
@@ -35,11 +38,17 @@ public class BlobSim : MonoBehaviour {
                     }
     
                     vec /= m;
-                    m -= 3f;
+                    m -= 2;
+                    if(m > 0) {
+                        m*= 0.5f;
+                        m = m *m;
+                    } else m = m *m*m;
+                   
+                    //m -= 0.75f;
                     vec *= m;
                            
              //   vec *= 0.1f;
-
+                    vec /= Nodes.Count;
                 n1.InterBlob += vec;
                 n2.InterBlob -= vec;
 
@@ -48,13 +57,45 @@ public class BlobSim : MonoBehaviour {
         }
         mid /= Nodes.Count;
 
+        Mid = mid;
 
     }
 
+    public int Dim = 30;
+    void Update() {
+
+        Arr = new float[Dim*Dim];
+
+
+        for(int ni = Nodes.Count; ni-- >0; ) {
+            var n1 = Nodes[ni];
+            Vector2 p1 = n1.transform.position;
+            var lp = p1 - Mid;
+
+            int d = Dim/2;
+            for(int i = -d; i< d; i++)
+                for(int j = -d; j< d; j++) {
+                    var ap =  new Vector2(i, j);
+                    var ds = (ap-lp).magnitude;
+                   // if(ds < 10)
+                        Arr[d+i + (d+j) *Dim] += 0.25f/ds;
+                }
+        }
+    }
+
+
     void OnDrawGizmos() {
 
-   
+        if(Arr == null) return;
+        int d = Dim/2;
+        for(int i = -d; i< d; i++)
+            for(int j = -d; j< d; j++) {
 
+                Gizmos.color = Color.Lerp(Color.red, Color.green, Arr[d+i + (d+j) *Dim]);
+                Gizmos.DrawWireSphere(Mid + new Vector2(i, j), 0.5f );
+
+
+            }
     }
 
 
