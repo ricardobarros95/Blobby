@@ -18,9 +18,17 @@ public class Steering : MonoBehaviour {
     float acceleration;
     public float growFactor = 0.0001f;
     private bool isSplitting = false;
+    float m;
+    public GameObject prefab;
+    Vector3 originalScale;
+    Spawn spawn;
     // Use this for initialization
     void Start () {
+
+        m = transform.localScale.magnitude;
+        originalScale = transform.localScale;
         area = transform.parent.gameObject;
+        spawn = area.GetComponent<Spawn>();
         InvokeRepeating("CreateDestination", 0, 2);
 	}
 	
@@ -29,7 +37,6 @@ public class Steering : MonoBehaviour {
 
         if(isWandering) Wander();
         Grow();
-        if (isSplitting) Split();
     }
     public Vector2 Vel;
     void Wander()
@@ -54,18 +61,20 @@ public class Steering : MonoBehaviour {
 
     void Split()
     {
-        transform.localScale = Vector3.one;
-        GameObject gj = Instantiate(this, transform.position, Quaternion.identity) as GameObject;
-
-        //gj.transform.position += 
+        transform.localScale = originalScale;
+        GameObject gj = Instantiate(prefab, transform.position + transform.position /10, Quaternion.identity) as GameObject;
+        spawn.spawnedObjects.Add(gj.GetComponent<Steering>());
+        gj.transform.SetParent(transform.parent);
+        gj.transform.localScale = originalScale;
+        isSplitting = false;
     }
 
     void Grow()
     {
         transform.localScale += Vector3.one * growFactor;
-        if(transform.localScale.x >  3)
+        if(transform.localScale.magnitude >  1.05f * m)
         {
-            isSplitting = true;
+            Split();
         }
     }
 
