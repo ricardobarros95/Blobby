@@ -212,7 +212,7 @@ public class MarchingCubes: MonoBehaviour {
                     pwr = Mathf.Min(pwr+ (1.0f/Mathf.Sqrt(((p.x-this.x)*(p.x-this.x))+((p.y-this.y)*(p.y-this.y))))*mcblob.isoScl * (1), 1);
                   //  pwr *= 1.0f - 4.0f* z *z;
 				}
-                pwr *= 1.0f - Mathf.Pow( Mathf.Abs(z*2),1.5f);
+                pwr *= 1.0f - Mathf.Pow( Mathf.Abs(z*2.1f -0.05f),1.5f);
               //  pwr /= 1 + Mathf.Abs(z);
 				this._i=pwr;
 			}
@@ -253,7 +253,7 @@ public class MarchingCubes: MonoBehaviour {
 			Vector3 current=tada[tadac++];
 			current.x=pnt.x-p.x;
 			current.y=pnt.y-p.y;
-			current.z=pnt.z;
+			current.z=(pnt.z -0.2f)*0.1f;
 			float mag=current.magnitude;
 			float pwr=.5f*(1f/(mag*mag*mag))*0.13f;			
 			result=result+(current*pwr);		
@@ -532,7 +532,7 @@ public class MarchingCubes: MonoBehaviour {
 		blobs[4][1]=.056f+.2f*(float)Mathf.Sin((float)Time.time*.3f);
 		blobs[4][2]=.25f+.08f*(float)Mathf.Cos((float)Time.time*.2f);
  
-              //  transform.Rotate(Time.deltaTime*10f,0,Time.deltaTime*.6f);
+                transform.Rotate(Time.deltaTime*10f,0,Time.deltaTime*.6f);
  
 		doFrame();	
  
