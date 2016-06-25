@@ -64,38 +64,40 @@ public class Spawn : MonoBehaviour {
         var b2 = Instantiate(prefab2, spawnPosition, Quaternion.identity) as GameObject;
         var bs = b2.GetComponentInChildren<BlobSim>();
         bs.HigherBlob = gj.transform;
+        gj.GetComponent<Steering>().BS = bs;
+        bs.MC = b2.GetComponentInChildren<MarchingCubes>();
         gj.transform.SetParent(gameObject.transform);
         spawnedObjects.Add(gj.GetComponent<Steering>());
         int color = Random.Range(0, 6);
         if(color == 0)
         {
-            gj.GetComponent<MeshRenderer>().material.color = Color.green;
-            gj.GetComponent<Steering>().color = Colors.GREEN;
+         //   gj.GetComponent<MeshRenderer>().material.color = Color.green;
+            gj.GetComponent<Steering>().setColor(  Colors.GREEN );
         }
         else if(color == 1)
         {
-            gj.GetComponent<MeshRenderer>().material.color = Color.red;
-            gj.GetComponent<Steering>().color = Colors.RED;
+            //gj.GetComponent<MeshRenderer>().material.color = Color.red;
+            gj.GetComponent<Steering>().setColor(  Colors.RED );
         }
         else if(color == 2)
         {
-            gj.GetComponent<MeshRenderer>().material.color = Color.blue;
-            gj.GetComponent<Steering>().color = Colors.BLUE;
+           // gj.GetComponent<MeshRenderer>().material.color = Color.blue;
+            gj.GetComponent<Steering>().setColor(  Colors.BLUE );
         }
         else if(color == 3)
         {
-            gj.GetComponent<MeshRenderer>().material.color = GameManager.orange;
-            gj.GetComponent<Steering>().color = Colors.ORANGE;
+            //gj.GetComponent<MeshRenderer>().material.color = GameManager.orange;
+            gj.GetComponent<Steering>().setColor(  Colors.ORANGE);
         }
         else if(color == 4)
         {
-            gj.GetComponent<MeshRenderer>().material.color = GameManager.purple;
-            gj.GetComponent<Steering>().color = Colors.PURPLE;
+           // gj.GetComponent<MeshRenderer>().material.color = GameManager.purple;
+            gj.GetComponent<Steering>().setColor(  Colors.PURPLE);
         }
         else
         {
-            gj.GetComponent<MeshRenderer>().material.color = Color.yellow;
-            gj.GetComponent<Steering>().color = Colors.YELLOW;
+            //gj.GetComponent<MeshRenderer>().material.color = Color.yellow;
+            gj.GetComponent<Steering>().setColor(  Colors.YELLOW );
         }
     }
 }
