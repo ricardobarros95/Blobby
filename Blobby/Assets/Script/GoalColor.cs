@@ -5,7 +5,6 @@ public class GoalColor : MonoBehaviour {
 
     public Colors color;
     Score score;
-    public GameObject gameOverUI;
 
     void Start()
     {
@@ -27,16 +26,6 @@ public class GoalColor : MonoBehaviour {
                 str.die();
                
             }
-            if(str.color == Colors.BLACK)
-            {
-                Debug.Log("black");
-                Lose();
-            }
         }
-    }
-
-    void Lose()
-    {
-        gameOverUI.SetActive(true);
     }
 }

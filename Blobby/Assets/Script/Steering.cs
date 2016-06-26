@@ -314,8 +314,17 @@ public class Steering : MonoBehaviour {
     }
     void MergeBlob( Steering other, Colors newColor) {
         //Debug.Log(newColor.ToString());
+<<<<<<< HEAD
+        setColor(newColor);
+        other.setColor(newColor);
+        if(spawn.CountBlackBobbles() == spawn.maxBubbles)
+        {
+            spawn.Lose();
+        }
+=======
         addCol(newColor);
         other.addCol(newColor);
+>>>>>>> 47017ef8fdc8d092de4f7cb078fa5d45497e3521
     }
     public void die() {
         Destroy(gameObject);
@@ -324,4 +333,5 @@ public class Steering : MonoBehaviour {
         if( color != Colors.BLACK )
             spawn.activeBlob--;
     }
+
 }
