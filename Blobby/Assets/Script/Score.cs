@@ -21,6 +21,7 @@ public class Score : MonoBehaviour {
     {
         score += quantity;
         ChangeScoreUI();
+        Handheld.Vibrate();
         if(data != null)
             data.score = score;
     }

@@ -24,7 +24,7 @@ public class Steering : MonoBehaviour {
     public Spawn spawn;
     public Colors color = Colors.UNKN;
     public float radius;
-
+    public float AvoidMod = 1;
     public BlobSim BS;
 
     public Material blackCubeMat;
@@ -49,7 +49,7 @@ public class Steering : MonoBehaviour {
             BlobMR.material.SetColor(ReflectPId, 
                 Color.Lerp( BlobMR.material.GetColor(ReflectPId), blackCubeMat.GetColor(ReflectPId), 5*Time.deltaTime ) );
         }
-        float cur = 0, high =0.001f;
+        float cur = 1, high =0.001f;
         int highI = -1;
 
         float tot = 0;
@@ -81,6 +81,8 @@ public class Steering : MonoBehaviour {
 
             blendColor(highI, high / (high + cur));
         }
+
+        AvoidMod = cur;
     }
 
     void blendColor( int ci, float m2 ) {
@@ -88,7 +90,9 @@ public class Steering : MonoBehaviour {
         var c1 = getColor( color );
         var c2 = getColor( (Colors) ci );
 
-        if(m2 > 0.6f) {
+        float thresh = 0.6f;
+        if((Colors)ci == Colors.BLACK) thresh = 0.8f;
+        if(m2 >thresh) {
             setColor((Colors)ci);
             if(color == Colors.BLACK) return;
         }
@@ -125,7 +129,9 @@ public class Steering : MonoBehaviour {
         if(isWandering) Wander();
        // Grow();
     }
-    public Vector2 Vel;
+    public Vector2 Vel, AvoidVel;
+
+    public float MaxAvoid = 200;
     void Wander()
     {
         float distanceTravelled = Time.deltaTime * speed;
@@ -134,7 +140,20 @@ public class Steering : MonoBehaviour {
 
         Vel *= 0.95f;
         Vel += ((Vector2)destination - (Vector2)transform.position).normalized;
-        transform.position += (Vector3)Vel * Time.deltaTime * speed;
+
+        var mv = Vel;
+        var avm = AvoidVel.sqrMagnitude;
+        if( avm > Mathf.Epsilon ) {
+
+            var effV = Vel + AvoidVel;
+            if(effV.sqrMagnitude > MaxAvoid * MaxAvoid) {
+                AvoidVel *= ( Mathf.Sqrt( Vel.sqrMagnitude - Vector2.Dot(AvoidVel,Vel)*2 - avm ) )/ Mathf.Sqrt(avm ); 
+            }
+            mv += AvoidVel;
+            AvoidVel *= 0.98f;
+        }
+        transform.position += (Vector3)mv * Time.deltaTime * speed;
+
     }
 
     void CreateDestination()
