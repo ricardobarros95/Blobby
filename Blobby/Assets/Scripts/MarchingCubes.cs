@@ -418,6 +418,13 @@ public class MarchingCubes: MonoBehaviour {
             var lp = p1 - BS.Mid;
             lp.x /= dimX;
             lp.y /= dimY;
+            float lim = 0.4f;
+            if(lp.sqrMagnitude > lim *lim) {
+
+                lp = lp.normalized * lim;
+                n1.transform.position = new Vector2(lp.x *dimX, lp.y *dimY) + BS.Mid;
+            }
+
             lp += new Vector2( 0.5f, 0.5f);
             // int d = Dim/2;
            // int mxX =  (int) ((lp.x +DSRange)*((float)dimX));

@@ -24,16 +24,20 @@ public class BlobSim : MonoBehaviour {
 
     public float Rad = 2;
     public float Centreing = 0.5f;
-    public Transform HigherBlob;
+    public Steering HigherBlob;
+
+    public float SpreadDrag = 0.75f;
     void FixedUpdate() {
 
         Vector2 mid = Vector2.zero;
 
+        float cm = 1;
         for(int i = Nodes.Count; i-- >0; ) {
             var n1 = Nodes[i];
             Vector2 p1 = n1.transform.position;
             mid += p1;
-            n1.Follow = Vector2.Lerp( n1.Follow, ((Vector2)HigherBlob.position - (Vector2)MC.transform.position ), Centreing * Time.deltaTime );
+            n1.Follow = Vector2.Lerp( n1.Follow, ((Vector2)HigherBlob.transform.position - (Vector2)MC.transform.position  + (HigherBlob.Vel - n1.Follow)*0.5f ), Centreing * Time.deltaTime *cm);
+            cm *= SpreadDrag;
             for(int j = i; j-- > 0; ) {
                 var n2 = Nodes[j];
                 Vector2 p2 = n2.transform.position;

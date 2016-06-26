@@ -32,7 +32,7 @@ public class Drag : MonoBehaviour
         // Unhook the OnFingerUp event
         Lean.LeanTouch.OnFingerUp -= OnFingerUp;
     }
-    public float DragSpd = 4.0f;
+    public float DragSpd = 4.0f, DragLim = 5;
     protected virtual void Update()
     {
         // If there is an active finger, move this GameObject based on it
@@ -43,8 +43,16 @@ public class Drag : MonoBehaviour
             var ray = draggingFinger.GetRay();
             var hit = default(RaycastHit);
             if (Physics.Raycast(ray, out hit, float.PositiveInfinity, -1 )) {
-                var str = holdingObject.GetComponentInChildren<BlobSim>().HigherBlob.GetComponent<Steering>();
-                str.Vel = Vector2.Lerp(str.Vel, (Vector2)hit.point - ((Vector2)str.transform.position + str.Vel*0.5f), DragSpd *Time.deltaTime) *3.0f;
+                var str = holdingObject.GetComponentInChildren<BlobSim>().HigherBlob;
+                var vec = ((Vector2)hit.point -((Vector2)str.transform.position));
+                var mag = vec.magnitude;
+                vec *= mag;
+                mag *= mag;
+               // -str.Vel*0.5f;
+                
+                if( mag > DragLim )
+                    vec *= DragLim / mag;
+                str.Vel = Vector2.Lerp(str.Vel, vec, DragSpd *Time.deltaTime) ;
             }
            
         } else {
@@ -83,8 +91,8 @@ public class Drag : MonoBehaviour
 
             if(holdingObject != null) {
 
-                var str = holdingObject.GetComponentInChildren<BlobSim>().HigherBlob.GetComponent<Steering>();
-                str.Vel += draggingFinger.SwipeDelta * SwipeMd;
+                var str = holdingObject.GetComponentInChildren<BlobSim>().HigherBlob;
+                str.Vel = Vector3.Lerp( str.Vel, draggingFinger.SwipeDelta * SwipeMd, 0.9f );
                 holdingObject =null;
             }
 

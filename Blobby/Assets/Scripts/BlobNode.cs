@@ -25,9 +25,9 @@ public class BlobNode : MonoBehaviour {
         var dir = Random.insideUnitCircle;
         Wander += dir*Acc *Random.Range(0.7f,1.0f) / (dir.magnitude +0.00001f);
 
-        var move = Wander + Follow * FollowStr;
+        var move = Wander *Speed + Follow * FollowStr;
         //move += InterBlob;
 
-        transform.position = (Vector2)transform.position + move *Speed*Time.deltaTime;
+        transform.position = (Vector2)transform.position + move*Time.deltaTime;
     }
 }
