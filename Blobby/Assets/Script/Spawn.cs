@@ -90,8 +90,10 @@ public class Spawn : MonoBehaviour {
         }
     }
     public int activeBlob = 0;
+    int blickChance = 0;
     private void RandomSpawn()
     {
+
         activeBlob++;
         Vector3 spawnPosition;
         float xPosition = Random.Range(-spawnArea.transform.lossyScale.x / 2 + 2, spawnArea.transform.lossyScale.x / 2 -2);
@@ -106,46 +108,49 @@ public class Spawn : MonoBehaviour {
         bs.MC = b2.GetComponentInChildren<MarchingCubes>();
         gj.transform.SetParent(gameObject.transform);
         spawnedObjects.Add(gj.GetComponent<Steering>());
-        int blickChance = 0;
-        if( spawnedObjects.Count > 0 )
-        {
-            blickChance = Mathf.Max( activeBlob - (spawnedObjects.Count - activeBlob), 0);
-        }
-        int color = Random.Range(0, 6*2 + blickChance );
+        
+        //if( spawnedObjects.Count > 0 )
+       // {
+           // blickChance = Mathf.Max( activeBlob - (spawnedObjects.Count - activeBlob), 0);
+        //}
+        int color = Random.Range(0, 10);
 
         gj.GetComponent<Steering>().setColor(Colors.GREEN);
         gj.GetComponent<Steering>().color = Colors.UNKN;
 
         gj.GetComponent<Steering>().spawn = this;
-        if (color >= 6 * 2)
+        if (blickChance > color && spawnedObjects.Count > 3)
         {
             //   gj.GetComponent<MeshRenderer>().material.color = Color.green;
             gj.GetComponent<Steering>().setColor(Colors.BLACK);
+            blickChance = 0;
+
         }
         else
         {
-            color %= 6;
-            if (color == 0)
+            blickChance++;
+            int colorfull = Random.Range(0, 6);
+            if (colorfull == 0)
             {
                 //   gj.GetComponent<MeshRenderer>().material.color = Color.green;
                 gj.GetComponent<Steering>().setColor(Colors.GREEN);
             }
-            else if (color == 1)
+            else if (colorfull == 1)
             {
                 //gj.GetComponent<MeshRenderer>().material.color = Color.red;
                 gj.GetComponent<Steering>().setColor(Colors.RED);
             }
-            else if (color == 2)
+            else if (colorfull == 2)
             {
                 // gj.GetComponent<MeshRenderer>().material.color = Color.blue;
                 gj.GetComponent<Steering>().setColor(Colors.BLUE);
             }
-            else if (color == 3)
+            else if (colorfull == 3)
             {
                 //gj.GetComponent<MeshRenderer>().material.color = GameManager.orange;
                 gj.GetComponent<Steering>().setColor(Colors.ORANGE);
             }
-            else if (color == 4)
+            else if (colorfull == 4)
             {
                 // gj.GetComponent<MeshRenderer>().material.color = GameManager.purple;
                 gj.GetComponent<Steering>().setColor(Colors.PURPLE);
