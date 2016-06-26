@@ -225,6 +225,10 @@ public class Steering : MonoBehaviour {
         //Debug.Log(newColor.ToString());
         setColor(newColor);
         other.setColor(newColor);
+        if(spawn.CountBlackBobbles() == spawn.maxBubbles)
+        {
+            spawn.Lose();
+        }
     }
     public void die() {
         Destroy(gameObject);
@@ -233,4 +237,5 @@ public class Steering : MonoBehaviour {
         if( color != Colors.BLACK )
             spawn.activeBlob--;
     }
+
 }

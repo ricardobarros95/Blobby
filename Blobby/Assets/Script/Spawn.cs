@@ -10,6 +10,7 @@ public class Spawn : MonoBehaviour {
     public float avoidanceFactor = 1;
     public float avoidDistance = 3.25f;
     public float spawnSpeed = 1;
+    public int maxBubbles = 10;
 
 	// Use this for initialization
 	void Start () {
@@ -99,67 +100,88 @@ public class Spawn : MonoBehaviour {
         float xPosition = Random.Range(-spawnArea.transform.lossyScale.x / 2 + 2, spawnArea.transform.lossyScale.x / 2 -2);
         float yPosition = Random.Range(-spawnArea.transform.lossyScale.y / 2 + 2, spawnArea.transform.lossyScale.y / 2 -2);
         spawnPosition = new Vector3(xPosition, yPosition, 0);
-        GameObject gj = Instantiate(prefab, spawnPosition, Quaternion.identity) as GameObject;
-        var b2 = Instantiate(prefab2, spawnPosition, Quaternion.identity) as GameObject;
-        var bs = b2.GetComponentInChildren<BlobSim>();
-        bs.Mid = bs.transform.position;
-        bs.HigherBlob = gj.transform.GetComponent<Steering>();
-        gj.GetComponent<Steering>().BS = bs;
-        bs.MC = b2.GetComponentInChildren<MarchingCubes>();
-        gj.transform.SetParent(gameObject.transform);
-        spawnedObjects.Add(gj.GetComponent<Steering>());
-        
-        //if( spawnedObjects.Count > 0 )
-       // {
-           // blickChance = Mathf.Max( activeBlob - (spawnedObjects.Count - activeBlob), 0);
-        //}
-        int color = Random.Range(0, 10);
-
-        gj.GetComponent<Steering>().setColor(Colors.GREEN);
-        gj.GetComponent<Steering>().color = Colors.UNKN;
-
-        gj.GetComponent<Steering>().spawn = this;
-        if (blickChance > color && spawnedObjects.Count > 3)
+        if(spawnedObjects.Count <= 10)
         {
-            //   gj.GetComponent<MeshRenderer>().material.color = Color.green;
-            gj.GetComponent<Steering>().setColor(Colors.BLACK);
-            blickChance = 0;
+            GameObject gj = Instantiate(prefab, spawnPosition, Quaternion.identity) as GameObject;
+            var b2 = Instantiate(prefab2, spawnPosition, Quaternion.identity) as GameObject;
+            var bs = b2.GetComponentInChildren<BlobSim>();
+            bs.Mid = bs.transform.position;
+            bs.HigherBlob = gj.transform.GetComponent<Steering>();
+            gj.GetComponent<Steering>().BS = bs;
+            bs.MC = b2.GetComponentInChildren<MarchingCubes>();
+            gj.transform.SetParent(gameObject.transform);
+            spawnedObjects.Add(gj.GetComponent<Steering>());
 
-        }
-        else
-        {
-            blickChance++;
-            int colorfull = Random.Range(0, 6);
-            if (colorfull == 0)
+            //if( spawnedObjects.Count > 0 )
+            // {
+            // blickChance = Mathf.Max( activeBlob - (spawnedObjects.Count - activeBlob), 0);
+            //}
+            int color = Random.Range(0, 10);
+
+            gj.GetComponent<Steering>().setColor(Colors.GREEN);
+            gj.GetComponent<Steering>().color = Colors.UNKN;
+
+            gj.GetComponent<Steering>().spawn = this;
+            if (blickChance > color && spawnedObjects.Count > 3)
             {
                 //   gj.GetComponent<MeshRenderer>().material.color = Color.green;
-                gj.GetComponent<Steering>().setColor(Colors.GREEN);
-            }
-            else if (colorfull == 1)
-            {
-                //gj.GetComponent<MeshRenderer>().material.color = Color.red;
-                gj.GetComponent<Steering>().setColor(Colors.RED);
-            }
-            else if (colorfull == 2)
-            {
-                // gj.GetComponent<MeshRenderer>().material.color = Color.blue;
-                gj.GetComponent<Steering>().setColor(Colors.BLUE);
-            }
-            else if (colorfull == 3)
-            {
-                //gj.GetComponent<MeshRenderer>().material.color = GameManager.orange;
-                gj.GetComponent<Steering>().setColor(Colors.ORANGE);
-            }
-            else if (colorfull == 4)
-            {
-                // gj.GetComponent<MeshRenderer>().material.color = GameManager.purple;
-                gj.GetComponent<Steering>().setColor(Colors.PURPLE);
+                gj.GetComponent<Steering>().setColor(Colors.BLACK);
+                blickChance = 0;
+
             }
             else
             {
-                //gj.GetComponent<MeshRenderer>().material.color = Color.yellow;
-                gj.GetComponent<Steering>().setColor(Colors.YELLOW);
+                blickChance++;
+                int colorfull = Random.Range(0, 6);
+                if (colorfull == 0)
+                {
+                    //   gj.GetComponent<MeshRenderer>().material.color = Color.green;
+                    gj.GetComponent<Steering>().setColor(Colors.GREEN);
+                }
+                else if (colorfull == 1)
+                {
+                    //gj.GetComponent<MeshRenderer>().material.color = Color.red;
+                    gj.GetComponent<Steering>().setColor(Colors.RED);
+                }
+                else if (colorfull == 2)
+                {
+                    // gj.GetComponent<MeshRenderer>().material.color = Color.blue;
+                    gj.GetComponent<Steering>().setColor(Colors.BLUE);
+                }
+                else if (colorfull == 3)
+                {
+                    //gj.GetComponent<MeshRenderer>().material.color = GameManager.orange;
+                    gj.GetComponent<Steering>().setColor(Colors.ORANGE);
+                }
+                else if (colorfull == 4)
+                {
+                    // gj.GetComponent<MeshRenderer>().material.color = GameManager.purple;
+                    gj.GetComponent<Steering>().setColor(Colors.PURPLE);
+                }
+                else
+                {
+                    //gj.GetComponent<MeshRenderer>().material.color = Color.yellow;
+                    gj.GetComponent<Steering>().setColor(Colors.YELLOW);
+                }
             }
         }
     }
+
+    public int CountBlackBobbles()
+    {
+        int blacks = 0;
+        for( int i =0; i < spawnedObjects.Count; i++)
+        {
+            if (spawnedObjects[i].color == Colors.BLACK) blacks++;
+        }
+        return blacks;
+    }
+
+    public GameObject loseScreen;
+
+    public void Lose()
+    {
+        loseScreen.SetActive(false);
+    }
+
 }
