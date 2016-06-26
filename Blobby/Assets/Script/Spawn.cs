@@ -69,12 +69,12 @@ public class Spawn : MonoBehaviour {
                     
                     
                     if(so1.color == Colors.BLACK && so2.color != Colors.BLACK )
-                        so1.AvoidVel -= (Vector2)opositeDirection * avoidanceFactor * 8.5f;
+                        so1.AvoidVel -= (Vector2)opositeDirection * avoidanceFactor * 8.5f / (1+so2.AvoidMod);
                     else
                         so1.AvoidVel += (Vector2)opositeDirection * avoidanceFactor* so1.AvoidMod;
 
                     if (so2.color == Colors.BLACK && so1.color != Colors.BLACK)
-                        so2.AvoidVel += (Vector2)opositeDirection * avoidanceFactor * 8.5f;
+                        so2.AvoidVel += (Vector2)opositeDirection * avoidanceFactor * 8.5f / (1+so1.AvoidMod);
                     else
                         so2.AvoidVel -= (Vector2)opositeDirection * avoidanceFactor * so2.AvoidMod;
 
@@ -83,7 +83,7 @@ public class Spawn : MonoBehaviour {
                         {
                             foreach( var bn1 in so1.BS.Nodes )
                                 foreach(var bn2 in so2.BS.Nodes)
-                                    if((bn1.transform.position - bn2.transform.position).sqrMagnitude < 9*9) {
+                                    if((bn1.transform.position - bn2.transform.position).sqrMagnitude < 10*10) {
                                         so1.ComboColors(so2);
                                         return;
                                     }

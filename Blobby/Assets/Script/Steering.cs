@@ -288,6 +288,7 @@ public class Steering : MonoBehaviour {
                 BlobMR.material = blackCubeMat;
                 // BlobMR.material.SetColor(ReflectPId, blackCubeMat.GetColor( ReflectPId) );
                 spawn.activeBlob--;
+                radius *= 2;
                 return;
         }
         var mr = GetComponentInChildren<MeshRenderer>();
