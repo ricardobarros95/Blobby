@@ -13,6 +13,8 @@ public class Spawn : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
+
+        Steering.ReflectPId = Shader.PropertyToID("_ReflectColor");
         spawnedObjects = new List<Steering>();
         InvokeRepeating("RandomSpawn", 1, spawnSpeed);
 	}
@@ -65,12 +67,12 @@ public class Spawn : MonoBehaviour {
                     opositeDirection = opositeDirection / magnitude;
                     
                     if(so1.color == Colors.BLACK && so2.color != Colors.BLACK )
-                        so1.Vel -= (Vector2)opositeDirection * avoidanceFactor * 1.5f;
+                        so1.Vel -= (Vector2)opositeDirection * avoidanceFactor * 2.5f;
                     else
                         so1.Vel += (Vector2)opositeDirection * avoidanceFactor;
 
                     if (so2.color == Colors.BLACK && so1.color != Colors.BLACK) 
-                        so2.Vel += (Vector2)opositeDirection * avoidanceFactor * 1.5f;
+                        so2.Vel += (Vector2)opositeDirection * avoidanceFactor * 2.5f;
                     else
                         so2.Vel -= (Vector2)opositeDirection * avoidanceFactor;
 
@@ -104,6 +106,7 @@ public class Spawn : MonoBehaviour {
         bs.HigherBlob = gj.transform.GetComponent<Steering>();
         gj.GetComponent<Steering>().BS = bs;
         bs.MC = b2.GetComponentInChildren<MarchingCubes>();
+        gj.GetComponent<Steering>().BlobMR =  bs.MC.GetComponent<MeshRenderer>();
         gj.transform.SetParent(gameObject.transform);
         spawnedObjects.Add(gj.GetComponent<Steering>());
         int blickChance = 0;
