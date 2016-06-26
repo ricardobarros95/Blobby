@@ -1,8 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-struct ciliderVolume
-{
+struct ciliderVolume {
     public float height;
     public float radius;
 }
@@ -29,25 +28,25 @@ public class Steering : MonoBehaviour {
 
     public Material blackCubeMat;
 
-    public MeshRenderer BlobMR; 
+    public MeshRenderer BlobMR;
     void Awake() {
         //GetComponent<MeshRenderer>();
     }
-    void Start () {
-       // radius = GetComponent<SphereCollider>().radius;
-       // m = transform.localScale.magnitude;
+    void Start() {
+        // radius = GetComponent<SphereCollider>().radius;
+        // m = transform.localScale.magnitude;
         //originalScale = transform.localScale;
         InvokeRepeating("CreateDestination", 0, 2);
         area = transform.parent.gameObject;
         spawn = area.GetComponent<Spawn>();
 
-      //  ReflectPId = Shader.PropertyToID("_ReflectColor");
+        //  ReflectPId = Shader.PropertyToID("_ReflectColor");
     }
     public float ColorRestRt = 0.5f;
     void Update() {
         if(color == Colors.BLACK) {
-            BlobMR.material.SetColor(ReflectPId, 
-                Color.Lerp( BlobMR.material.GetColor(ReflectPId), blackCubeMat.GetColor(ReflectPId), 5*Time.deltaTime ) );
+            BlobMR.material.SetColor(ReflectPId,
+                Color.Lerp(BlobMR.material.GetColor(ReflectPId), blackCubeMat.GetColor(ReflectPId), 5*Time.deltaTime));
         }
         float cur = 1, high =0.001f;
         int highI = -1;
@@ -56,9 +55,9 @@ public class Steering : MonoBehaviour {
         for(int i = ColChng.Length; i-- >0; ) {
 
             if(i == (int)color) {
-               
+
             } else {
-                if(ColChng[i] > 0.9f )
+                if(ColChng[i] > 0.9f)
                     ColChng[i] = 0.9f;
                 if(ColChng[i] > high) {
 
@@ -70,7 +69,7 @@ public class Steering : MonoBehaviour {
                 if(ColChng[i] < 0)
                     ColChng[i] = 0;
             }
-         }
+        }
 
         if(highI != -1) {
             cur = 1- high;
@@ -87,8 +86,8 @@ public class Steering : MonoBehaviour {
 
     void blendColor( int ci, float m2 ) {
         float m1 = 1-m2;
-        var c1 = getColor( color );
-        var c2 = getColor( (Colors) ci );
+        var c1 = getColor(color);
+        var c2 = getColor((Colors)ci);
 
         float thresh = 0.6f;
         if((Colors)ci == Colors.BLACK) thresh = 0.8f;
@@ -124,17 +123,15 @@ public class Steering : MonoBehaviour {
         }
         return col;
     }
-    void FixedUpdate () {
+    void FixedUpdate() {
 
         if(isWandering) Wander();
-       // Grow();
+        // Grow();
     }
     public Vector2 Vel, AvoidVel;
 
     public float MaxAvoid = 200;
-    void Wander() 
-    {
-
+    void Wander() {
         float distanceTravelled = Time.deltaTime * speed;
         float currentTravel = distanceTravelled / distance;
         //gameObject.transform.position = Vector3.Lerp(transform.position, destination, currentTravel);
@@ -144,11 +141,11 @@ public class Steering : MonoBehaviour {
 
         var mv = Vel;
         var avm = AvoidVel.sqrMagnitude;
-        if( avm >0.1f) {
+        if(avm > Mathf.Epsilon) {
 
             var effV = Vel + AvoidVel;
             if(effV.sqrMagnitude > MaxAvoid * MaxAvoid) {
-                AvoidVel *= ( Mathf.Sqrt( Vel.sqrMagnitude - Vector2.Dot(AvoidVel,Vel)*2 - avm ) )/ Mathf.Sqrt(avm ); 
+                AvoidVel *= (Mathf.Sqrt(Vel.sqrMagnitude - Vector2.Dot(AvoidVel, Vel)*2 - avm))/ Mathf.Sqrt(avm);
             }
             mv += AvoidVel;
             AvoidVel *= 0.98f;
@@ -157,8 +154,7 @@ public class Steering : MonoBehaviour {
 
     }
 
-    void CreateDestination()
-    {
+    void CreateDestination() {
         float xPosition = Random.Range(-area.transform.lossyScale.x / 2, area.transform.lossyScale.x / 2);
         float yPosition = Random.Range(-area.transform.lossyScale.y / 2, area.transform.lossyScale.y / 2);
         destination = new Vector3(xPosition, yPosition, zPosition);
@@ -185,16 +181,15 @@ public class Steering : MonoBehaviour {
         }
     } */
 
-    public void ComboColors( Steering other )
-    {
+    public void ComboColors( Steering other ) {
         Colors colorHit = other.color;
 
-        
-        
+
+
         if(color == Colors.BLACK || colorHit == Colors.BLACK) {
             MergeBlob(other, Colors.BLACK);
             return;
-        } 
+        }
 
         switch(color) {
             case Colors.GREEN:
@@ -255,7 +250,7 @@ public class Steering : MonoBehaviour {
     }
 
     public void setColor( Colors c ) {
-        if (c == color) return;
+        if(c == color) return;
         if(color == Colors.UNKN) {
             for(int i = ColChng.Length; i-- >0; ) ColChng[i] = 0;
             ColChng[(int)c] = 1;
@@ -264,7 +259,7 @@ public class Steering : MonoBehaviour {
         color = c;
         Color col = Color.black;
 
-       
+
         switch(c) {
             case Colors.GREEN:
                 col  = GameManager.green;
@@ -285,18 +280,18 @@ public class Steering : MonoBehaviour {
                 col = GameManager.yellow;
                 break;
             case Colors.BLACK:
-                
+
                 BS.MC.gameObject.layer = 1;
                 BlobMR.material = blackCubeMat;
-               // BlobMR.material.SetColor(ReflectPId, blackCubeMat.GetColor( ReflectPId) );
+                // BlobMR.material.SetColor(ReflectPId, blackCubeMat.GetColor( ReflectPId) );
                 spawn.activeBlob--;
                 return;
         }
         var mr = GetComponentInChildren<MeshRenderer>();
-        if( mr != null ) //for debugery
-          mr.material .color = col;
-       
-        BlobMR.material.SetColor( ReflectPId, col); ;
+        if(mr != null) //for debugery
+            mr.material.color = col;
+
+        BlobMR.material.SetColor(ReflectPId, col); ;
     }
     static public int ReflectPId = 0;
 
@@ -306,31 +301,27 @@ public class Steering : MonoBehaviour {
         if(color == Colors.BLACK) return;
         if(c != color) {
             float r = Time.deltaTime *ColCnhgSpd;
-            if(c != Colors.BLACK) r *= 1.5f ;
+            if(c != Colors.BLACK) r *= 1.5f;
             ColChng[(int)c] += r;
         } else {
             for(int i = ColChng.Length; i-- >0; ) ColChng[i] -= Time.deltaTime *ColCnhgSpd*0.5f;
         }
     }
-    void MergeBlob( Steering other, Colors newColor) {
+    void MergeBlob( Steering other, Colors newColor ) {
         //Debug.Log(newColor.ToString());
-<<<<<<< HEAD
-        setColor(newColor);
-        other.setColor(newColor);
-        if(spawn.CountBlackBobbles() == spawn.maxBubbles)
-        {
-            spawn.Lose();
-        }
-=======
+
         addCol(newColor);
         other.addCol(newColor);
->>>>>>> 47017ef8fdc8d092de4f7cb078fa5d45497e3521
+        if(spawn.CountBlackBobbles() == spawn.maxBubbles) {
+            spawn.Lose();
+        }
+
     }
     public void die() {
         Destroy(gameObject);
         Destroy(BS.transform.parent.gameObject);
         spawn.spawnedObjects.Remove(this);
-        if( color != Colors.BLACK )
+        if(color != Colors.BLACK)
             spawn.activeBlob--;
     }
 

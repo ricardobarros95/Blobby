@@ -103,32 +103,8 @@ public class Spawn : MonoBehaviour {
         float xPosition = Random.Range(-spawnArea.transform.lossyScale.x / 2 + 2, spawnArea.transform.lossyScale.x / 2 -2);
         float yPosition = Random.Range(-spawnArea.transform.lossyScale.y / 2 + 2, spawnArea.transform.lossyScale.y / 2 -2);
         spawnPosition = new Vector3(xPosition, yPosition, 0);
-<<<<<<< HEAD
         if(spawnedObjects.Count <= 10)
-=======
-        GameObject gj = Instantiate(prefab, spawnPosition, Quaternion.identity) as GameObject;
-        var b2 = Instantiate(prefab2, spawnPosition, Quaternion.identity) as GameObject;
-        var bs = b2.GetComponentInChildren<BlobSim>();
-        bs.Mid = bs.transform.position;
-        bs.HigherBlob = gj.transform.GetComponent<Steering>();
-        gj.GetComponent<Steering>().BS = bs;
-        bs.MC = b2.GetComponentInChildren<MarchingCubes>();
-        gj.GetComponent<Steering>().BlobMR =  bs.MC.GetComponent<MeshRenderer>();
-        gj.transform.SetParent(gameObject.transform);
-        spawnedObjects.Add(gj.GetComponent<Steering>());
-        
-        //if( spawnedObjects.Count > 0 )
-       // {
-           // blickChance = Mathf.Max( activeBlob - (spawnedObjects.Count - activeBlob), 0);
-        //}
-        int color = Random.Range(0, 10);
-
-        gj.GetComponent<Steering>().setColor(Colors.GREEN);
-        gj.GetComponent<Steering>().color = Colors.UNKN;
-
-        gj.GetComponent<Steering>().spawn = this;
-        if (blickChance > color && spawnedObjects.Count > 3)
->>>>>>> 47017ef8fdc8d092de4f7cb078fa5d45497e3521
+            
         {
             GameObject gj = Instantiate(prefab, spawnPosition, Quaternion.identity) as GameObject;
             var b2 = Instantiate(prefab2, spawnPosition, Quaternion.identity) as GameObject;
@@ -137,6 +113,7 @@ public class Spawn : MonoBehaviour {
             bs.HigherBlob = gj.transform.GetComponent<Steering>();
             gj.GetComponent<Steering>().BS = bs;
             bs.MC = b2.GetComponentInChildren<MarchingCubes>();
+            gj.GetComponent<Steering>().BlobMR = bs.MC.GetComponent<MeshRenderer>();
             gj.transform.SetParent(gameObject.transform);
             spawnedObjects.Add(gj.GetComponent<Steering>());
 
