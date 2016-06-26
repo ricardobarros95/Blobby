@@ -43,7 +43,7 @@ public class Spawn : MonoBehaviour {
             }
             if(spawnedObjects[i].transform.position.x > 70)
             {
-                Debug.Log("bounce");
+                //Debug.Log("bounce");
                 spawnedObjects[i].Vel -= new Vector2(1, 0);
             }
             if(spawnedObjects[i].transform.position.x < -70)
@@ -69,12 +69,12 @@ public class Spawn : MonoBehaviour {
                     
                     
                     if(so1.color == Colors.BLACK && so2.color != Colors.BLACK )
-                        so1.AvoidVel -= (Vector2)opositeDirection * avoidanceFactor * 8.5f / (1+so2.AvoidMod);
+                        so1.AvoidVel -= (Vector2)opositeDirection * avoidanceFactor * 8.5f / (2-so2.AvoidMod);
                     else
                         so1.AvoidVel += (Vector2)opositeDirection * avoidanceFactor* so1.AvoidMod;
 
                     if (so2.color == Colors.BLACK && so1.color != Colors.BLACK)
-                        so2.AvoidVel += (Vector2)opositeDirection * avoidanceFactor * 8.5f / (1+so1.AvoidMod);
+                        so2.AvoidVel += (Vector2)opositeDirection * avoidanceFactor * 8.5f / (2-so1.AvoidMod);
                     else
                         so2.AvoidVel -= (Vector2)opositeDirection * avoidanceFactor * so2.AvoidMod;
 
