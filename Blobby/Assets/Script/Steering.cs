@@ -93,7 +93,10 @@ public class Steering : MonoBehaviour {
         if((Colors)ci == Colors.BLACK) thresh = 0.8f;
         if(m2 >thresh) {
             setColor((Colors)ci);
-            if(color == Colors.BLACK) return;
+            if(color == Colors.BLACK) {
+              
+                return;
+            }
         }
 
         var col = Color.Lerp(c1, c2, m2);
@@ -253,6 +256,7 @@ public class Steering : MonoBehaviour {
     }
 
     public void setColor( Colors c ) {
+       
         if(c == color) return;
         if(color == Colors.UNKN) {
             for(int i = ColChng.Length; i-- >0; ) ColChng[i] = 0;
@@ -289,6 +293,7 @@ public class Steering : MonoBehaviour {
                 // BlobMR.material.SetColor(ReflectPId, blackCubeMat.GetColor( ReflectPId) );
                 spawn.activeBlob--;
                 radius *= 2;
+                FindObjectOfType<Creeps>().step();
                 return;
         }
         var mr = GetComponentInChildren<MeshRenderer>();

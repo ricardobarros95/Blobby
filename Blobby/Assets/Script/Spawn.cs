@@ -101,7 +101,12 @@ public class Spawn : MonoBehaviour {
         activeBlob++;
         Vector3 spawnPosition;
         float xPosition = Random.Range(-spawnArea.transform.lossyScale.x / 2 + 2, spawnArea.transform.lossyScale.x / 2 -2);
-        float yPosition = Random.Range(-spawnArea.transform.lossyScale.y / 2 + 2, spawnArea.transform.lossyScale.y / 2 -2);
+        float yPosition = Random.Range(-1.0f, 1.0f);
+        if(yPosition > 0) {
+            yPosition += spawnArea.transform.lossyScale.y / 2 + 2;
+        } else {
+            yPosition -= spawnArea.transform.lossyScale.y / 2 + 2;
+        }
         spawnPosition = new Vector3(xPosition, yPosition, 0);
         if(spawnedObjects.Count <= 10)
             
