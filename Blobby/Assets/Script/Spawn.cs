@@ -68,12 +68,12 @@ public class Spawn : MonoBehaviour {
                     
                     
                     if(so1.color == Colors.BLACK && so2.color != Colors.BLACK )
-                        so1.AvoidVel -= (Vector2)opositeDirection * avoidanceFactor * 2.5f* so1.AvoidMod;
+                        so1.AvoidVel -= (Vector2)opositeDirection * avoidanceFactor * 8.5f;
                     else
                         so1.AvoidVel += (Vector2)opositeDirection * avoidanceFactor* so1.AvoidMod;
 
                     if (so2.color == Colors.BLACK && so1.color != Colors.BLACK)
-                        so2.AvoidVel += (Vector2)opositeDirection * avoidanceFactor * 2.5f* so2.AvoidMod;
+                        so2.AvoidVel += (Vector2)opositeDirection * avoidanceFactor * 8.5f;
                     else
                         so2.AvoidVel -= (Vector2)opositeDirection * avoidanceFactor * so2.AvoidMod;
 

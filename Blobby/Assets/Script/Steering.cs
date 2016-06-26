@@ -132,8 +132,9 @@ public class Steering : MonoBehaviour {
     public Vector2 Vel, AvoidVel;
 
     public float MaxAvoid = 200;
-    void Wander()
+    void Wander() 
     {
+
         float distanceTravelled = Time.deltaTime * speed;
         float currentTravel = distanceTravelled / distance;
         //gameObject.transform.position = Vector3.Lerp(transform.position, destination, currentTravel);
@@ -143,7 +144,7 @@ public class Steering : MonoBehaviour {
 
         var mv = Vel;
         var avm = AvoidVel.sqrMagnitude;
-        if( avm > Mathf.Epsilon ) {
+        if( avm >0.1f) {
 
             var effV = Vel + AvoidVel;
             if(effV.sqrMagnitude > MaxAvoid * MaxAvoid) {
