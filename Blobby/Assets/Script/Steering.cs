@@ -139,16 +139,19 @@ public class Steering : MonoBehaviour {
         Vel *= 0.95f;
         Vel += ((Vector2)destination - (Vector2)transform.position).normalized;
 
-        var mv = Vel;
-        var avm = AvoidVel.sqrMagnitude;
-        if(avm > Mathf.Epsilon) {
+        AvoidVel *= 0.97f;
+        var mv = AvoidVel + Vel;
+        
 
-            var effV = Vel + AvoidVel;
-            if(effV.sqrMagnitude > MaxAvoid * MaxAvoid) {
-                AvoidVel *= (Mathf.Sqrt(Vel.sqrMagnitude - Vector2.Dot(AvoidVel, Vel)*2 - avm))/ Mathf.Sqrt(avm);
+        var vm = mv.sqrMagnitude;
+        if(vm > MaxAvoid * MaxAvoid ) {
+            if(AvoidVel.sqrMagnitude > MaxAvoid *MaxAvoid) {
+                Vel = Vector2.zero;
+                AvoidVel= AvoidVel.normalized * MaxAvoid;
+            } else {
+                Vel *= (Mathf.Sqrt(vm - Vector2.Dot(AvoidVel, Vel)*2 - AvoidVel.sqrMagnitude ))/ Vel.magnitude;
+                mv = AvoidVel + Vel;
             }
-            mv += AvoidVel;
-            AvoidVel *= 0.98f;
         }
         transform.position += (Vector3)mv * Time.deltaTime * speed;
 

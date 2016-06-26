@@ -60,7 +60,7 @@ public class Spawn : MonoBehaviour {
                 if (magnitude < avoidDistance * avoidDistance)
                 {
                     Debug.DrawLine(so2.transform.position, so1.transform.position, Color.white);
-                    if(Mathf.Epsilon > magnitude)
+                    if(0.001f > magnitude)
                     {
                         continue;
                     }
