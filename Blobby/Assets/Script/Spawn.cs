@@ -29,6 +29,25 @@ public class Spawn : MonoBehaviour {
         {
             var so1 = spawnedObjects[i];
             var p1 = so1.BS.Mid;
+
+            if(spawnedObjects[i].transform.position.y > 40)
+            {
+                spawnedObjects[i].Vel -= new Vector2(0, 1);
+            }
+            if(spawnedObjects[i].transform.position.y < -40)
+            {
+                spawnedObjects[i].Vel += new Vector2(0, 1);
+            }
+            if(spawnedObjects[i].transform.position.x > 70)
+            {
+                Debug.Log("bounce");
+                spawnedObjects[i].Vel -= new Vector2(1, 0);
+            }
+            if(spawnedObjects[i].transform.position.x < -70)
+            {
+                spawnedObjects[i].Vel += new Vector2(1, 0);
+            }
+
             for (int j = 0; j < i; j++)
             {
                 var so2 = spawnedObjects[j];
