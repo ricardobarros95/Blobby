@@ -214,8 +214,10 @@ public class Steering : MonoBehaviour {
                 spawn.activeBlob--;
                 return;
         }
-        GetComponentInChildren<MeshRenderer>().material.color = col;
-        BS.MC.GetComponent<MeshRenderer>().material.color = col;
+        var mr = GetComponentInChildren<MeshRenderer>();
+        if( mr != null ) //for debugery
+         mr.material .color = col;
+        BS.MC.GetComponent<MeshRenderer>().material.SetColor("_ReflectColor", col); ;
     }
 
     void MergeBlob( Steering other, Colors newColor)

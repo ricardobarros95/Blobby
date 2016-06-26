@@ -81,6 +81,7 @@ public class Spawn : MonoBehaviour {
         GameObject gj = Instantiate(prefab, spawnPosition, Quaternion.identity) as GameObject;
         var b2 = Instantiate(prefab2, spawnPosition, Quaternion.identity) as GameObject;
         var bs = b2.GetComponentInChildren<BlobSim>();
+        bs.Mid = bs.transform.position;
         bs.HigherBlob = gj.transform.GetComponent<Steering>();
         gj.GetComponent<Steering>().BS = bs;
         bs.MC = b2.GetComponentInChildren<MarchingCubes>();
