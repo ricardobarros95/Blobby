@@ -27,13 +27,17 @@ public class Spawn : MonoBehaviour {
         //Avoidance Code
         for (int i = 0; i < spawnedObjects.Count; i++)
         {
+            var so1 = spawnedObjects[i];
+            var p1 = so1.BS.Mid;
             for (int j = 0; j < i; j++)
             {
-                Vector3 opositeDirection = -(spawnedObjects[j].transform.position - spawnedObjects[i].transform.position);
+                var so2 = spawnedObjects[j];
+                var p2 = so2.BS.Mid;
+                Vector3 opositeDirection = -(so2.transform.position - so1.transform.position);
                 float magnitude = opositeDirection.sqrMagnitude;
                 if (magnitude < avoidDistance * avoidDistance)
                 {
-                    Debug.DrawLine(spawnedObjects[j].transform.position, spawnedObjects[i].transform.position, Color.white);
+                    Debug.DrawLine(so2.transform.position, so1.transform.position, Color.white);
                     if(Mathf.Epsilon > magnitude)
                     {
                         continue;
@@ -41,21 +45,26 @@ public class Spawn : MonoBehaviour {
                     Vector3 savedOpositeDirection = opositeDirection;
                     opositeDirection = opositeDirection / magnitude;
                     
-                    if(spawnedObjects[i].color == Colors.BLACK && spawnedObjects[j].color != Colors.BLACK )
-                        spawnedObjects[i].Vel -= (Vector2)opositeDirection * avoidanceFactor * 1.5f;
+                    if(so1.color == Colors.BLACK && so2.color != Colors.BLACK )
+                        so1.Vel -= (Vector2)opositeDirection * avoidanceFactor * 1.5f;
                     else
-                        spawnedObjects[i].Vel += (Vector2)opositeDirection * avoidanceFactor;
+                        so1.Vel += (Vector2)opositeDirection * avoidanceFactor;
 
-                    if (spawnedObjects[j].color == Colors.BLACK && spawnedObjects[i].color != Colors.BLACK) 
-                        spawnedObjects[j].Vel += (Vector2)opositeDirection * avoidanceFactor * 1.5f;
+                    if (so2.color == Colors.BLACK && so1.color != Colors.BLACK) 
+                        so2.Vel += (Vector2)opositeDirection * avoidanceFactor * 1.5f;
                     else
-                        spawnedObjects[j].Vel -= (Vector2)opositeDirection * avoidanceFactor;
+                        so2.Vel -= (Vector2)opositeDirection * avoidanceFactor;
 
-
-                    if (magnitude < Mathf.Pow(  spawnedObjects[i].radius + spawnedObjects[j].radius, 2 ) )
-                    {
-                        spawnedObjects[i].ComboColors(spawnedObjects[j]);
-                    }
+                    if( so1.color != so2.color ) // ??
+                        if(magnitude < Mathf.Pow((so1.radius + so2.radius)*3, 2))
+                        {
+                            foreach( var bn1 in so1.BS.Nodes )
+                                foreach(var bn2 in so2.BS.Nodes)
+                                    if((bn1.transform.position - bn2.transform.position).sqrMagnitude < 9*9) {
+                                        so1.ComboColors(so2);
+                                        return;
+                                    }
+                        }
                 }
 
             }
@@ -83,6 +92,10 @@ public class Spawn : MonoBehaviour {
             blickChance = Mathf.Max( activeBlob - (spawnedObjects.Count - activeBlob), 0);
         }
         int color = Random.Range(0, 6*2 + blickChance );
+
+        gj.GetComponent<Steering>().setColor(Colors.GREEN);
+        gj.GetComponent<Steering>().color = Colors.UNKN;
+
         gj.GetComponent<Steering>().spawn = this;
         if (color >= 6 * 2)
         {

@@ -12,7 +12,9 @@ public class Score : MonoBehaviour {
     void Start()
     {
         scoreText = textObject.GetComponent<Text>();
-        data = GameObject.Find("Data").GetComponent<Data>();
+        var dObj = GameObject.Find("Data"); 
+        if( dObj!= null )
+            data = dObj.GetComponent<Data>();
     }
 
     public void ChangeScore(int quantity)
