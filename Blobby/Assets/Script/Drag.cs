@@ -4,7 +4,7 @@
 public class Drag : MonoBehaviour
 {
     // This stores the layers we want the raycast to hit (make sure this GameObject's layer is included!)
-    public LayerMask LayerMask = UnityEngine.Physics.DefaultRaycastLayers;
+    public LayerMask LayerMask = UnityEngine.Physics.DefaultRaycastLayers, DragLM;
 
     // This stores the finger that's currently dragging this GameObject
     private Lean.LeanFinger draggingFinger;
@@ -42,16 +42,20 @@ public class Drag : MonoBehaviour
           //  Lean.LeanTouch.MoveObject(holdingObject.transform, draggingFinger.DeltaScreenPosition);
             var ray = draggingFinger.GetRay();
             var hit = default(RaycastHit);
-            if (Physics.Raycast(ray, out hit, float.PositiveInfinity, -1 )) {
+            if (Physics.Raycast(ray, out hit, float.PositiveInfinity, DragLM )) {
                 var str = holdingObject.GetComponentInChildren<BlobSim>().HigherBlob;
                 var vec = ((Vector2)hit.point -((Vector2)str.transform.position));
+                vec *= 30;
                 var mag = vec.magnitude;
-                vec *= mag;
-                mag *= mag;
-               // -str.Vel*0.5f;
-                
-                if( mag > DragLim )
+
+                if(mag > DragLim)
                     vec *= DragLim / mag;
+
+              //  vec *= mag;
+              //  mag *= mag;
+                vec -= str.Vel*0.3f;
+                
+
                 str.Vel = Vector2.Lerp(str.Vel, vec, DragSpd *Time.deltaTime) ;
             }
            
