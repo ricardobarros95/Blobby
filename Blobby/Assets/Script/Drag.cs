@@ -36,7 +36,7 @@ public class Drag : MonoBehaviour
     protected virtual void Update()
     {
         // If there is an active finger, move this GameObject based on it
-        if (draggingFinger != null && holdingObject != null  )
+        if (draggingFinger != null && holdingObject != null  && holdingObject.GetComponentInChildren<BlobSim>().HigherBlob.color != Colors.BLACK)
         {
             //holdingObject.GetComponent<Steering>().enabled = false;
           //  Lean.LeanTouch.MoveObject(holdingObject.transform, draggingFinger.DeltaScreenPosition);
@@ -69,7 +69,7 @@ public class Drag : MonoBehaviour
         var hit = default(RaycastHit);
 
         // Was this finger pressed down on a collider?
-        if (Physics.Raycast(ray, out hit, float.PositiveInfinity, BlobMask ))
+        if (Physics.SphereCast(ray, 4, out hit, float.PositiveInfinity, BlobMask ))
         {
             
             holdingObject = hit.collider.transform.parent.gameObject;

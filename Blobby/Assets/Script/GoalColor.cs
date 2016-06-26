@@ -5,26 +5,38 @@ public class GoalColor : MonoBehaviour {
 
     public Colors color;
     Score score;
+    public GameObject gameOverUI;
 
     void Start()
     {
         score = GameObject.Find("Score").GetComponent<Score>();
     }
 
-    void OnTriggerEnter(Collider other)
+    public void OnTriggerEnter(Collider other)
     {
-       // Debug.Log("triggered");
+       Debug.Log("triggered");
         Debug.Log(other.gameObject.tag);
-        if (other.gameObject.tag == "Blob") //eww
+//        if (other.gameObject.tag == "Blob") //eww
         {
-            Debug.Log(other.gameObject.GetComponent<Steering>().color.ToString());
-            if (other.gameObject.GetComponent<Steering>().color == color)
+            var mc = other.GetComponent<MarchingCubes>();
+            var str = mc.BS.HigherBlob;
+            Debug.Log(str.color.ToString());
+            if (str.color == color)
             {
                 score.ChangeScore(10);
-                other.GetComponent<Steering>().die();
+                str.die();
                
             }
-
+            if(str.color == Colors.BLACK)
+            {
+                Debug.Log("black");
+                Lose();
+            }
         }
+    }
+
+    void Lose()
+    {
+        gameOverUI.SetActive(true);
     }
 }

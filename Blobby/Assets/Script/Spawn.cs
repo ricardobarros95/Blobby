@@ -38,13 +38,21 @@ public class Spawn : MonoBehaviour {
                     {
                         continue;
                     }
+                    Vector3 savedOpositeDirection = opositeDirection;
                     opositeDirection = opositeDirection / magnitude;
                     
-                    spawnedObjects[i].Vel += (Vector2)opositeDirection * avoidanceFactor;
+                    if(spawnedObjects[i].color == Colors.BLACK && spawnedObjects[j].color != Colors.BLACK )
+                        spawnedObjects[i].Vel -= (Vector2)opositeDirection * avoidanceFactor * 1.5f;
+                    else
+                        spawnedObjects[i].Vel += (Vector2)opositeDirection * avoidanceFactor;
 
-                    spawnedObjects[j].Vel -= (Vector2)opositeDirection * avoidanceFactor;
+                    if (spawnedObjects[j].color == Colors.BLACK && spawnedObjects[i].color != Colors.BLACK) 
+                        spawnedObjects[j].Vel += (Vector2)opositeDirection * avoidanceFactor * 1.5f;
+                    else
+                        spawnedObjects[j].Vel -= (Vector2)opositeDirection * avoidanceFactor;
 
-                    if(magnitude < Mathf.Pow(  spawnedObjects[i].radius + spawnedObjects[j].radius, 2 ) )
+
+                    if (magnitude < Mathf.Pow(  spawnedObjects[i].radius + spawnedObjects[j].radius, 2 ) )
                     {
                         spawnedObjects[i].ComboColors(spawnedObjects[j]);
                     }
@@ -53,9 +61,10 @@ public class Spawn : MonoBehaviour {
             }
         }
     }
-
+    public int activeBlob = 0;
     private void RandomSpawn()
     {
+        activeBlob++;
         Vector3 spawnPosition;
         float xPosition = Random.Range(-spawnArea.transform.lossyScale.x / 2 + 2, spawnArea.transform.lossyScale.x / 2 -2);
         float yPosition = Random.Range(-spawnArea.transform.lossyScale.y / 2 + 2, spawnArea.transform.lossyScale.y / 2 -2);
@@ -68,36 +77,51 @@ public class Spawn : MonoBehaviour {
         bs.MC = b2.GetComponentInChildren<MarchingCubes>();
         gj.transform.SetParent(gameObject.transform);
         spawnedObjects.Add(gj.GetComponent<Steering>());
-        int color = Random.Range(0, 6);
-        if(color == 0)
+        int blickChance = 0;
+        if( spawnedObjects.Count > 0 )
         {
-         //   gj.GetComponent<MeshRenderer>().material.color = Color.green;
-            gj.GetComponent<Steering>().setColor(  Colors.GREEN );
+            blickChance = Mathf.Max( activeBlob - (spawnedObjects.Count - activeBlob), 0);
         }
-        else if(color == 1)
+        int color = Random.Range(0, 6*2 + blickChance );
+        gj.GetComponent<Steering>().spawn = this;
+        if (color >= 6 * 2)
         {
-            //gj.GetComponent<MeshRenderer>().material.color = Color.red;
-            gj.GetComponent<Steering>().setColor(  Colors.RED );
-        }
-        else if(color == 2)
-        {
-           // gj.GetComponent<MeshRenderer>().material.color = Color.blue;
-            gj.GetComponent<Steering>().setColor(  Colors.BLUE );
-        }
-        else if(color == 3)
-        {
-            //gj.GetComponent<MeshRenderer>().material.color = GameManager.orange;
-            gj.GetComponent<Steering>().setColor(  Colors.ORANGE);
-        }
-        else if(color == 4)
-        {
-           // gj.GetComponent<MeshRenderer>().material.color = GameManager.purple;
-            gj.GetComponent<Steering>().setColor(  Colors.PURPLE);
+            //   gj.GetComponent<MeshRenderer>().material.color = Color.green;
+            gj.GetComponent<Steering>().setColor(Colors.BLACK);
         }
         else
         {
-            //gj.GetComponent<MeshRenderer>().material.color = Color.yellow;
-            gj.GetComponent<Steering>().setColor(  Colors.YELLOW );
+            color %= 6;
+            if (color == 0)
+            {
+                //   gj.GetComponent<MeshRenderer>().material.color = Color.green;
+                gj.GetComponent<Steering>().setColor(Colors.GREEN);
+            }
+            else if (color == 1)
+            {
+                //gj.GetComponent<MeshRenderer>().material.color = Color.red;
+                gj.GetComponent<Steering>().setColor(Colors.RED);
+            }
+            else if (color == 2)
+            {
+                // gj.GetComponent<MeshRenderer>().material.color = Color.blue;
+                gj.GetComponent<Steering>().setColor(Colors.BLUE);
+            }
+            else if (color == 3)
+            {
+                //gj.GetComponent<MeshRenderer>().material.color = GameManager.orange;
+                gj.GetComponent<Steering>().setColor(Colors.ORANGE);
+            }
+            else if (color == 4)
+            {
+                // gj.GetComponent<MeshRenderer>().material.color = GameManager.purple;
+                gj.GetComponent<Steering>().setColor(Colors.PURPLE);
+            }
+            else
+            {
+                //gj.GetComponent<MeshRenderer>().material.color = Color.yellow;
+                gj.GetComponent<Steering>().setColor(Colors.YELLOW);
+            }
         }
     }
 }

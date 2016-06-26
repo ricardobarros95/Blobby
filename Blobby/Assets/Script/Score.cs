@@ -19,7 +19,8 @@ public class Score : MonoBehaviour {
     {
         score += quantity;
         ChangeScoreUI();
-        data.score = score;
+        if(data != null)
+            data.score = score;
     }
 
     void ChangeScoreUI()

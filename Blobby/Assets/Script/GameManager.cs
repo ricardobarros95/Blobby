@@ -2,15 +2,19 @@
 using System.Collections;
 
 
-public enum Colors { GREEN, RED, BLUE, ORANGE, PURPLE, YELLOW };
+public enum Colors { GREEN, RED, BLUE, ORANGE, PURPLE, YELLOW, BLACK, UNKN };
 
 public class GameManager : MonoBehaviour {
 
     public GameObject[] goalObjects = new GameObject[2];
 
 
-    public static Color orange = new Color(1, 0.647059f, 0, 1);
-    public static Color purple = new Color(0.627451f, 0.12549f, 0.941176f, 1);
+    public static Color orange = new Color32(0xf0,0x72,0x00,0xff);
+    public static Color purple = new Color32(0xd2, 0x10, 0xbc, 0xff);
+    public static Color red = new Color32(0xce, 0x1e, 0x0a, 0xff);
+    public static Color yellow= new Color32(0xf0, 0xe0, 0x0a, 0xff);
+    public static Color blue = new Color32(0x34, 0x2d, 0xee, 0xff);
+    public static Color green = new Color32(0x19, 0xaa, 0x32, 0xff);
 
     public Sprite[] colorSprites;
     public GameObject goalSprite1;
@@ -19,8 +23,14 @@ public class GameManager : MonoBehaviour {
     void Start()
     {
         InvokeRepeating("PickGoals", 0, 3);
+        
     }
-    
+    void GoalsOn()
+    {
+        goalObjects[0].SetActive(true);
+        goalObjects[1].SetActive(true);
+    }
+
     void PickGoals()
     {
         int goals = Random.Range(0, 3);
@@ -36,6 +46,7 @@ public class GameManager : MonoBehaviour {
                 goalSprite1.GetComponent<SpriteRenderer>().sprite = colorSprites[1];
                 goalSprite2.GetComponent<SpriteRenderer>().sprite = colorSprites[0];
 
+
             }
             else
             {
@@ -49,7 +60,7 @@ public class GameManager : MonoBehaviour {
         }
         else if( goals == 1)
         {
-            goals = Random.Range(0, 1);
+            goals = Random.Range(0, 2);
             if(goals == 0)
             {
                 //goalObjects[0].GetComponent<MeshRenderer>().material.color = Color.blue;
@@ -71,7 +82,7 @@ public class GameManager : MonoBehaviour {
         }
         else
         {
-            goals = Random.Range(0, 1);
+            goals = Random.Range(0, 2);
             if(goals == 0)
             {
                 //goalObjects[0].GetComponent<MeshRenderer>().material.color = purple;
@@ -91,6 +102,10 @@ public class GameManager : MonoBehaviour {
                 goalSprite2.GetComponent<SpriteRenderer>().sprite = colorSprites[4];
             }
         }
+        goalObjects[0].SetActive(false);
+        goalObjects[1].SetActive(false);
+        Invoke("GoalsOn", 0.3f);
+
     }
 
 

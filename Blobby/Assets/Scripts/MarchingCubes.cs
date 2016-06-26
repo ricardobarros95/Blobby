@@ -39,7 +39,14 @@ using System.Collections;
  
 public class MarchingCubes: MonoBehaviour {
 
-    BlobSim BS;
+
+
+    void OnTriggerEnter(Collider other)
+    {
+        Debug.Log("triggered");
+        other.GetComponentInParent<GoalColor>().OnTriggerEnter(GetComponent<Collider>());
+    }
+    public BlobSim BS;
 	/*Amount of cubes in X/Y/Z directions, Dimension will always be from -.5f to .5f in XYZ
 	  remember to call Regen() if changing!
     */

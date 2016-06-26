@@ -21,12 +21,13 @@ public class Steering : MonoBehaviour {
     float m;
     public GameObject prefab;
     Vector3 originalScale;
-    Spawn spawn;
-    public Colors color;
+    public Spawn spawn;
+    public Colors color = Colors.UNKN;
     public float radius;
 
     public BlobSim BS;
 
+    public Material blackCubeMat;
 
     // Use this for initialization
     void Start () {
@@ -87,6 +88,13 @@ public class Steering : MonoBehaviour {
     public void ComboColors( Steering other )
     {
         Colors colorHit = other.color;
+
+        if( color == Colors.BLACK || colorHit == Colors.BLACK )
+        {
+            MergeBlob(other, Colors.BLACK);
+            return;
+        }
+
         switch(color)
         {
             case Colors.GREEN:
@@ -177,28 +185,34 @@ public class Steering : MonoBehaviour {
     }
 
     public void setColor( Colors c ) {
-
+        if (c == color) return;
         color = c;
         Color col = Color.black;
         switch(c) {
             case Colors.GREEN:
-                col  = Color.green;
+                col  = GameManager.green;
                 break;
             case Colors.BLUE:
-                col  = Color.blue;
+                col  = GameManager.blue;
                 break;
             case Colors.PURPLE:
                 col = GameManager.purple;
                 break;
             case Colors.RED:
-                col  = Color.red;
+                col  = GameManager.red;
                 break;
             case Colors.ORANGE:
                 col  = GameManager.orange;
                 break;
             case Colors.YELLOW:
-                col = Color.yellow;
+                col = GameManager.yellow;
                 break;
+            case Colors.BLACK:
+                
+                BS.MC.gameObject.layer = 1;
+                BS.MC.GetComponent<MeshRenderer>().material = blackCubeMat;
+                spawn.activeBlob--;
+                return;
         }
         GetComponentInChildren<MeshRenderer>().material.color = col;
         BS.MC.GetComponent<MeshRenderer>().material.color = col;
@@ -212,6 +226,9 @@ public class Steering : MonoBehaviour {
     }
     public void die() {
         Destroy(gameObject);
+        Destroy(BS.transform.parent.gameObject);
         spawn.spawnedObjects.Remove(this);
+        if( color != Colors.BLACK )
+            spawn.activeBlob--;
     }
 }
