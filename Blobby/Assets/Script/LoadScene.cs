@@ -3,9 +3,9 @@ using System.Collections;
 
 public class LoadScene : MonoBehaviour {
 
-	public void LoadSceneM()
+	public void LoadSceneM(int scene)
     {
-        Application.LoadLevel(1);
+        Application.LoadLevel(scene);
     }
 
     public void Pause()

@@ -33,22 +33,22 @@ public class Spawn : MonoBehaviour {
             var so1 = spawnedObjects[i];
             var p1 = so1.BS.Mid;
 
-            if(spawnedObjects[i].transform.position.y > 40)
+            if(spawnedObjects[i].transform.position.y > 60)
             {
-                spawnedObjects[i].Vel -= new Vector2(0, 1);
+                spawnedObjects[i].Vel = Vector2.Lerp(spawnedObjects[i].Vel, Vector2.down * 500, 10 * Time.deltaTime);
             }
-            if(spawnedObjects[i].transform.position.y < -40)
+            if(spawnedObjects[i].transform.position.y < -60)
             {
-                spawnedObjects[i].Vel += new Vector2(0, 1);
+                spawnedObjects[i].Vel = Vector2.Lerp(spawnedObjects[i].Vel, Vector2.up * 500, 10 * Time.deltaTime);
             }
             if(spawnedObjects[i].transform.position.x > 70)
             {
                 //Debug.Log("bounce");
-                spawnedObjects[i].Vel -= new Vector2(1, 0);
+                spawnedObjects[i].Vel = Vector2.Lerp(spawnedObjects[i].Vel, Vector2.left * 500, 10 * Time.deltaTime);
             }
             if(spawnedObjects[i].transform.position.x < -70)
             {
-                spawnedObjects[i].Vel += new Vector2(1, 0);
+                spawnedObjects[i].Vel = Vector2.Lerp(spawnedObjects[i].Vel, Vector2.right * 500, 10 * Time.deltaTime);
             }
 
             for (int j = 0; j < i; j++)
@@ -94,7 +94,7 @@ public class Spawn : MonoBehaviour {
         }
     }
     public int activeBlob = 0;
-    int blickChance = 0;
+    int blickChance = 5;
     private void RandomSpawn()
     {
 
@@ -108,7 +108,7 @@ public class Spawn : MonoBehaviour {
             yPosition -= spawnArea.transform.lossyScale.y / 2 + 2;
         }
         spawnPosition = new Vector3(xPosition, yPosition, 0);
-        if(spawnedObjects.Count <= 10)
+        if(spawnedObjects.Count < maxBubbles)
             
         {
             GameObject gj = Instantiate(prefab, spawnPosition, Quaternion.identity) as GameObject;
@@ -179,11 +179,12 @@ public class Spawn : MonoBehaviour {
 
     public int CountBlackBobbles()
     {
-        int blacks = 0;
+        int blacks = 1;
         for( int i =0; i < spawnedObjects.Count; i++)
         {
             if (spawnedObjects[i].color == Colors.BLACK) blacks++;
         }
+        if (blacks >= maxBubbles) Lose();
         return blacks;
     }
 
@@ -191,7 +192,7 @@ public class Spawn : MonoBehaviour {
 
     public void Lose()
     {
-        loseScreen.SetActive(false);
+        loseScreen.SetActive(true);
     }
 
 }

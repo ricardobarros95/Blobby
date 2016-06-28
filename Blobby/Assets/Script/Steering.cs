@@ -94,7 +94,7 @@ public class Steering : MonoBehaviour {
         if(m2 >thresh) {
             setColor((Colors)ci);
             if(color == Colors.BLACK) {
-              
+               
                 return;
             }
         }
@@ -294,6 +294,12 @@ public class Steering : MonoBehaviour {
                 spawn.activeBlob--;
                 radius *= 2;
                 FindObjectOfType<Creeps>().step();
+                if (spawn.CountBlackBobbles() >= spawn.maxBubbles)
+                {
+                    Debug.Log("asad");
+                    spawn.Lose();
+                }
+
                 return;
         }
         var mr = GetComponentInChildren<MeshRenderer>();
@@ -321,9 +327,6 @@ public class Steering : MonoBehaviour {
 
         addCol(newColor);
         other.addCol(newColor);
-        if(spawn.CountBlackBobbles() == spawn.maxBubbles) {
-            spawn.Lose();
-        }
 
     }
     public void die() {

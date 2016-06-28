@@ -26,6 +26,11 @@ public class GoalColor : MonoBehaviour {
                 str.die();
                
             }
+            else
+            {
+
+                str.Vel = Vector2.Lerp(str.Vel, transform.right * 500, 10 * Time.deltaTime);
+            }
         }
     }
 }
